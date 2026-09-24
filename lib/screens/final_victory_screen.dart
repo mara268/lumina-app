@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/iot_monitor_panel.dart';
 
 class FinalVictoryScreen extends StatelessWidget {
   const FinalVictoryScreen({super.key});
@@ -6,99 +7,77 @@ class FinalVictoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF0D1B2A), // Fundo escuro para destacar a vitória
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        title: const Text('Missão Cumprida'),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         elevation: 0,
-        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 20.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF3E0),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.amber.withOpacity(0.4),
-                          blurRadius: 25,
-                          spreadRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.workspace_premium_rounded,
-                      size: 75,
-                      color: Colors.amber,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Parabéns, Criadora!',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF2D3142),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    '🌟 Mestra da Automação & Tecnologia',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFFE65100),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(22),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 15,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Text(
-                      'Você começou com curiosidade e percorreu toda a jornada:\n\n✔ Sequência Lógica\n✔ Comandos & Instruções\n✔ Decisões Condicionais\n✔ Respostas a Eventos\n✔ Integração Geral da Casa\n\nVocê não é apenas usuária: você tem o poder de criar tecnologia!',
-                      style: TextStyle(
-                        fontSize: 14.5,
-                        height: 1.5,
-                        color: Color(0xFF37474F),
-                      ),
-                    ),
-                  ),
+              const SizedBox(height: 20),
+              const Icon(Icons.workspace_premium, color: Colors.amber, size: 100),
+              const SizedBox(height: 24),
+              const Text(
+                'PARABÉNS!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Você dominou a abordagem STEAM e conectou todos os dispositivos da casa. As "Conexões Invisíveis" da Internet das Coisas estão agora nas suas mãos!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 32),
+              
+              // O log final mostrando o resumo da jornada da aluna
+              const IotMonitorPanel(
+                logs: [
+                  'Inicializando diagnóstico geral do sistema...',
+                  '[Fase 1] Sequência de LEDs -> OK',
+                  '[Fase 2] Comando Atuador -> OK',
+                  '[Fase 3] Lógica Condicional -> OK',
+                  '[Fase 4] Eventos em Tempo Real -> OK',
+                  '[Fase 5] Integração Casa Inteligente -> ONLINE',
+                  '',
+                  '>>> STATUS: SISTEMA 100% OPERACIONAL. <<<',
+                  'Aguardando novas instruções...'
                 ],
               ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE65100),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 54),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
+              
+              const SizedBox(height: 40),
+              ElevatedButton.icon(
                 onPressed: () {
-                  // Volta direto para a raiz da pilha de telas (HomeScreen)
+                  // Volta para o ecrã inicial da aplicação
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
-                child: const Text(
+                icon: const Icon(Icons.home),
+                label: const Text(
                   'VOLTAR AO INÍCIO',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber.shade700,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ],

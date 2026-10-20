@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/iot_monitor_panel.dart';
+import 'fase_concluida_screen.dart';
 import 'phase4_screen.dart';
 
 class Phase3RewardScreen extends StatelessWidget {
@@ -7,64 +7,22 @@ class Phase3RewardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(
-        title: const Text('Lógica Aprovada'),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(Icons.memory, color: Colors.blueAccent, size: 80),
-              const SizedBox(height: 24),
-              const Text(
-                'CONDIÇÃO VERDADEIRA!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 32),
-              
-              const IotMonitorPanel(
-                logs: [
-                  'Solicitando leitura do SENSOR_LUZ...',
-                  'Retorno recebido: 38%',
-                  'Avaliando bloco condicional IF (38 < 40)...',
-                  'Resultado Lógico: TRUE',
-                  'Acionando RELÉ_01: HIGH',
-                  'Circuito da lâmpada fechado com sucesso.',
-                ],
-              ),
-              
-              const Spacer(),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Phase4Screen()),
-                  );
-                },
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('AVANÇAR PARA FASE 4'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return FaseConcluidaScreen(
+      numeroFase: 3,
+      conceito: 'Condição (SE / SENÃO)',
+      comoResolveu:
+          'Você ensinou a casa a decidir sozinha: ela olha o sensor de luz e escolhe entre ligar ou desligar a varanda.',
+      codigo: 'SE luminosidade < 40 ENTÃO\n'
+          '    LIGAR luz da varanda\n'
+          'SENÃO\n'
+          '    DESLIGAR luz da varanda',
+      porQueFunciona:
+          'A condição é uma pergunta de sim ou não. Se a resposta for "sim" (está escuro), a casa faz o ENTÃO; se for "não", faz o SENÃO. Assim a luz só gasta energia quando é preciso.',
+      noDiaADia:
+          'Os postes de rua funcionam assim: um sensor mede a luz e, quando escurece, eles acendem sozinhos.',
+      iconeDiaADia: Icons.light_outlined,
+      textoBotao: 'AVANÇAR PARA A FASE 4',
+      proximaTela: (context) => const Phase4Screen(),
     );
   }
 }

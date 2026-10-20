@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/iot_monitor_panel.dart';
+import 'fase_concluida_screen.dart';
 import 'phase3_screen.dart';
 
 class Phase2RewardScreen extends StatelessWidget {
@@ -7,63 +7,21 @@ class Phase2RewardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(
-        title: const Text('Comando Executado'),
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(Icons.settings_remote, color: Colors.blueAccent, size: 80),
-              const SizedBox(height: 24),
-              const Text(
-                'COMANDO ENVIADO!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 32),
-              
-              const IotMonitorPanel(
-                logs: [
-                  'Iniciando protocolo de transmissão...',
-                  'Alvo: ATUADOR_CLIMATIZACAO',
-                  'Enviando pacote (0x01)...',
-                  'Aguardando confirmação (ACK)...',
-                  '[SUCESSO] Modo Econômico ativado no destino.',
-                ],
-              ),
-              
-              const Spacer(),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Phase3Screen()),
-                  );
-                },
-                icon: const Icon(Icons.arrow_forward),
-                label: const Text('AVANÇAR PARA FASE 3'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return FaseConcluidaScreen(
+      numeroFase: 2,
+      conceito: 'Comandos e atuadores',
+      comoResolveu:
+          'Você montou um comando com as duas partes que ele precisa: para QUEM (o ventilador, endereço 2) e O QUÊ (ligar).',
+      codigo: 'ENVIAR → end. 2 | LIGAR\n'
+          '         ↑          ↑\n'
+          '     para quem    o quê',
+      porQueFunciona:
+          'Cada aparelho da casa tem um endereço, como uma casa em uma rua. Quando o comando chega no endereço certo com a ação certa, o atuador (o motor do ventilador) obedece. É assim que a maquete conversa com o app pelo protocolo Modbus.',
+      noDiaADia:
+          'O controle remoto faz isso: cada botão envia um comando com uma ação, e só o aparelho certo responde.',
+      iconeDiaADia: Icons.settings_remote_outlined,
+      textoBotao: 'AVANÇAR PARA A FASE 3',
+      proximaTela: (context) => const Phase3Screen(),
     );
   }
 }

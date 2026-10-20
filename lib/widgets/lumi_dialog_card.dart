@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-enum LumiMood {
-  instruindo, // Ícone de lâmpada/brilho padrão
-  pensando,   // Ícone de engrenagem/dúvida
-  celebrando, // Ícone de estrela/festa
-  alerta,     // Ícone de atenção
-}
+import 'lumi_avatar.dart';
 
+// As telas que já importam este arquivo continuam enxergando o LumiMood.
+export 'lumi_avatar.dart' show LumiMood, LumiMoodVisual;
+
+/// Card de fala da Lumi: a Lumi animada à esquerda e o balão de fala à direita.
 class LumiDialogCard extends StatefulWidget {
   final String text;
   final LumiMood mood;
@@ -52,87 +51,55 @@ class _LumiDialogCardState extends State<LumiDialogCard>
   }
 
   @override
+  void didUpdateWidget(covariant LumiDialogCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Quando a fala muda, o balão entra de novo.
+    if (oldWidget.text != widget.text) {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  IconData _getMoodIcon() {
-    switch (widget.mood) {
-      case LumiMood.celebrando:
-        return Icons.celebration_rounded;
-      case LumiMood.pensando:
-        return Icons.psychology_alt_rounded;
-      case LumiMood.alerta:
-        return Icons.tips_and_updates_rounded;
-      case LumiMood.instruindo:
-      default:
-        return Icons.auto_awesome_rounded;
-    }
-  }
-
-  Color _getBadgeColor() {
-    switch (widget.mood) {
-      case LumiMood.celebrando:
-        return Colors.green.shade600;
-      case LumiMood.pensando:
-        return Colors.blue.shade600;
-      case LumiMood.alerta:
-        return Colors.deepOrange.shade600;
-      case LumiMood.instruindo:
-      default:
-        return const Color(0xFFFF6F00);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: Container(
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF8F0),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: const Color(0xFFFFE0B2),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(8),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AnimatedContainer(
+    final accent = widget.mood.accentColor;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        LumiAvatar(mood: widget.mood, height: 120, fala: widget.text),
+        const SizedBox(width: 6),
+        Expanded(
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(bottom: 18),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: _getBadgeColor(),
-                  shape: BoxShape.circle,
+                  color: const Color(0xFFFFFFFF),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                    bottomRight: Radius.circular(18),
+                    bottomLeft: Radius.circular(4),
+                  ),
+                  border: Border.all(color: accent.withAlpha(70), width: 1.5),
                   boxShadow: [
                     BoxShadow(
-                      color: _getBadgeColor().withAlpha(60),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                      color: Colors.black.withAlpha(10),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: Icon(
-                  _getMoodIcon(),
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -141,7 +108,7 @@ class _LumiDialogCardState extends State<LumiDialogCard>
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: _getBadgeColor(),
+                        color: accent,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -158,10 +125,10 @@ class _LumiDialogCardState extends State<LumiDialogCard>
                   ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

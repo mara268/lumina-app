@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import '../widgets/lumi_dialog_card.dart';
+import '../widgets/lumi_reaction.dart';
+import '../widgets/phase_progress_bar.dart';
 import 'final_victory_screen.dart';
+
+/// Um bloco da biblioteca da jogadora.
+class _Bloco {
+  final String id;
+  final String conceito;
+  final String codigo;
+  final String sistema; // parte da casa que o bloco controla (vazio = bloco errado)
+  final IconData icone;
+
+  const _Bloco(this.id, this.conceito, this.codigo, this.sistema, this.icone);
+
+  bool get correto => sistema.isNotEmpty;
+}
 
 class Phase5Screen extends StatefulWidget {
   const Phase5Screen({super.key});
@@ -10,95 +25,215 @@ class Phase5Screen extends StatefulWidget {
 }
 
 class _Phase5ScreenState extends State<Phase5Screen> {
-  bool lightsActivated = false;
-  bool windowSecured = false;
-  bool ventilationAdjusted = false;
-  bool automationDeployed = false;
+  // 4 blocos certos (um de cada fase) + 2 "pegadinhas"
+  static const List<_Bloco> _biblioteca = [
+    _Bloco('ventilador', 'Comando', 'ENVIAR → ventilador | LIGAR', 'Ventilação', Icons.air),
+    _Bloco('chuva_abrir', 'Evento', 'QUANDO chuva FAÇA abrir janelas', '', Icons.water_drop),
+    _Bloco('varanda', 'Condição', 'SE luz < 40 ENTÃO ligar varanda SENÃO desligar', 'Varanda', Icons.lightbulb),
+    _Bloco('corredor', 'Sequência', 'QUANDO presença no corredor FAÇA acender corredor', 'Corredor', Icons.directions_walk),
+    _Bloco('luz_sempre', 'Atalho', 'Deixar todas as luzes sempre ligadas', '', Icons.flash_on),
+    _Bloco('chuva_fechar', 'Evento', 'QUANDO chuva FAÇA fechar janelas', 'Janelas', Icons.window),
+  ];
 
-  void deployFullAutomation() {
+  final List<_Bloco> _rotina = [];
+  final Set<String> _sistemasLigados = {};
+  bool _concluida = false;
+  bool _hasError = false;
+  String _dicaAtual = '';
+
+  void _alternar(_Bloco bloco) {
+    if (_concluida) return;
     setState(() {
-      lightsActivated = true;
-      windowSecured = true;
-      ventilationAdjusted = true;
-      automationDeployed = true;
+      if (_rotina.contains(bloco)) {
+        _rotina.remove(bloco);
+      } else {
+        _rotina.add(bloco);
+      }
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Fase 5: A Casa Inteligente', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), backgroundColor: Colors.transparent, elevation: 0),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const LumiDialogCard(text: 'A noite caiu e uma chuva começou! Integre Sequência, Comandos, Condições e Eventos para automatizar toda a casa!'),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: automationDeployed ? const Color(0xFFE8F5E9) : const Color(0xFFECEFF1),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: automationDeployed ? Colors.green.shade400 : Colors.blueGrey.shade300, width: 2),
-                ),
-                child: Column(
-                  children: [
-                    Icon(automationDeployed ? Icons.verified_rounded : Icons.sensors_rounded, size: 55, color: automationDeployed ? Colors.green.shade700 : Colors.blueGrey.shade700),
-                    const SizedBox(height: 10),
-                    Text(automationDeployed ? 'SISTEMA TOTALMENTE INTEGRADO ✅' : 'AGUARDANDO PROGRAMAÇÃO INTEGRADA', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: automationDeployed ? Colors.green.shade900 : Colors.blueGrey.shade900)),
-                    const Divider(height: 24),
-                    _buildStatusRow('1. Iluminação (Condicional Noite):', lightsActivated ? 'Ligada' : 'Pendente'),
-                    const SizedBox(height: 6),
-                    _buildStatusRow('2. Janelas (Evento Chuva):', windowSecured ? 'Protegida' : 'Aberta'),
-                    const SizedBox(height: 6),
-                    _buildStatusRow('3. Climatização (Comando Escrita):', ventilationAdjusted ? 'Modo Econômico' : 'Standby'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              if (!automationDeployed)
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE65100), foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 52), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
-                  onPressed: deployFullAutomation,
-                  icon: const Icon(Icons.hub_rounded),
-                  label: const Text('EXECUTAR AUTOMAÇÃO COMPLETA', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                ),
-              if (automationDeployed) ...[
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: const Color(0xFFE8F5E9), borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.green.shade300)),
-                  child: const Column(
-                    children: [
-                      Text('🎉 Conexões Estabelecidas com Sucesso!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1B5E20))),
-                      SizedBox(height: 6),
-                      Text('Você comandou a residência de ponta a ponta!', textAlign: TextAlign.center, style: TextStyle(fontSize: 13.5, color: Color(0xFF2E7D32))),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700, foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const FinalVictoryScreen())),
-                  icon: const Icon(Icons.emoji_events_rounded),
-                  label: const Text('VER CONCLUSÃO DA JORNADA 🏆', style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-              ],
-            ],
-          ),
+  Future<void> _executar() async {
+    if (_rotina.isEmpty) {
+      setState(() {
+        _hasError = true;
+        _dicaAtual = 'A rotina está vazia! Toque nos blocos da sua biblioteca para colocá-los na Rotina da Noite.';
+      });
+      return;
+    }
+
+    // liga os sistemas dos blocos certos que estão na rotina
+    setState(() {
+      _sistemasLigados
+        ..clear()
+        ..addAll(_rotina.where((b) => b.correto).map((b) => b.sistema));
+    });
+
+    final pegadinha = _rotina.where((b) => !b.correto).toList();
+    final faltando = _biblioteca.where((b) => b.correto && !_rotina.contains(b)).toList();
+
+    if (pegadinha.isEmpty && faltando.isEmpty) {
+      setState(() {
+        _concluida = true;
+        _hasError = false;
+      });
+      await mostrarReacaoLumi(
+        context,
+        mood: LumiMood.celebrando,
+        titulo: 'A casa despertou!',
+        mensagem: 'Sequência, comandos, decisões e eventos funcionando juntos. Lembrei... lembrei de tudo!',
+        textoBotao: 'VER A MENSAGEM DA VÓ HELENA',
+      );
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FinalVictoryScreen()),
+      );
+      return;
+    }
+
+    final String erro;
+    if (pegadinha.isNotEmpty) {
+      final b = pegadinha.first;
+      erro = b.id == 'chuva_abrir'
+          ? 'Opa! Um bloco manda ABRIR as janelas quando chove. A casa ia virar piscina! Tire esse bloco da rotina.'
+          : 'O atalho "luzes sempre ligadas" voltou! Isso gasta a energia do gerador. Tire esse bloco da rotina.';
+    } else {
+      erro = 'Tudo funcionou... menos ${faltando.first.sistema.toLowerCase()}. Qual bloco cuida dessa parte da casa?';
+    }
+
+    setState(() {
+      _hasError = true;
+      _dicaAtual = erro;
+    });
+    await mostrarReacaoLumi(
+      context,
+      mood: LumiMood.alerta,
+      titulo: 'Quase! Falta um ajuste',
+      mensagem: erro,
+      textoBotao: 'AJUSTAR A ROTINA',
+    );
+  }
+
+  Widget _cartaoBloco(_Bloco bloco) {
+    final naRotina = _rotina.contains(bloco);
+    return Card(
+      elevation: naRotina ? 0 : 1,
+      color: naRotina ? const Color(0xFFFFF3E0) : Colors.white,
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: naRotina ? const Color(0xFFE65100) : Colors.grey.shade300,
+          width: naRotina ? 2 : 1,
+        ),
+      ),
+      child: ListTile(
+        onTap: () => _alternar(bloco),
+        leading: Icon(bloco.icone, color: const Color(0xFFE65100)),
+        title: Text(
+          bloco.codigo,
+          style: const TextStyle(fontFamily: 'monospace', fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(bloco.conceito),
+        trailing: Icon(
+          naRotina ? Icons.check_circle : Icons.add_circle_outline,
+          color: naRotina ? const Color(0xFFE65100) : Colors.grey,
         ),
       ),
     );
   }
 
-  Widget _buildStatusRow(String label, String status) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _status(String sistema, IconData icone) {
+    final ligado = _sistemasLigados.contains(sistema);
+    return Column(
       children: [
-        Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-        Text(status, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFFE65100))),
+        Icon(icone, size: 34, color: ligado ? Colors.amber.shade700 : Colors.grey.shade400),
+        const SizedBox(height: 4),
+        Text(
+          sistema,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: ligado ? const Color(0xFF2D3142) : Colors.grey,
+          ),
+        ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Fase 5: A Casa Inteligente'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
+        elevation: 0.5,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const PhaseProgressBar(currentStep: 5, totalSteps: 5),
+              const SizedBox(height: 12),
+
+              LumiDialogCard(
+                mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
+                text: _hasError
+                    ? _dicaAtual
+                    : 'Falta uma coisa: a casa não é só uma luz ou uma janela, é tudo funcionando junto. Monte a Rotina da Noite com os blocos que você criou!',
+              ),
+              const SizedBox(height: 16),
+
+              // painel da casa
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _status('Corredor', Icons.light),
+                      _status('Ventilação', Icons.air),
+                      _status('Varanda', Icons.lightbulb),
+                      _status('Janelas', Icons.window),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              Text(
+                'Sua biblioteca de blocos (toque para colocar na rotina)',
+                style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold, color: Colors.grey.shade800),
+              ),
+              const SizedBox(height: 6),
+              for (final bloco in _biblioteca) _cartaoBloco(bloco),
+              const SizedBox(height: 20),
+
+              ElevatedButton.icon(
+                onPressed: _concluida ? null : _executar,
+                icon: const Icon(Icons.nightlight_round),
+                label: Text(
+                  'EXECUTAR ROTINA DA NOITE (${_rotina.length})',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE65100),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

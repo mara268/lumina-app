@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/lumi_dialog_card.dart';
+import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
 import 'phase1_reward_screen.dart';
 
@@ -19,6 +20,14 @@ class _Phase1ScreenState extends State<Phase1Screen> {
 
   late List<String> _userOrder;
   bool _hasError = false;
+  int _tentativasErradas = 0;
+
+  // Regra de dicas do roteiro: 1º erro = pergunta, 2º = pista, 3º+ = primeiro passo.
+  static const List<String> _dicas = [
+    'A luz tentou acender antes de saber se tinha alguém ali. Quem vem primeiro: perceber ou agir?',
+    'Pista: a casa primeiro percebe (sensor), depois pensa (placa) e só então age (lâmpada).',
+    'O primeiro passo é "Ler Sensor de Presença". Agora monte o resto!',
+  ];
 
   @override
   void initState() {
@@ -30,7 +39,7 @@ class _Phase1ScreenState extends State<Phase1Screen> {
     ];
   }
 
-  void _verifyOrder() {
+  Future<void> _verifyOrder() async {
     bool isCorrect = true;
     for (int i = 0; i < _correctOrder.length; i++) {
       if (_userOrder[i] != _correctOrder[i]) {
@@ -40,21 +49,31 @@ class _Phase1ScreenState extends State<Phase1Screen> {
     }
 
     if (isCorrect) {
+      setState(() => _hasError = false);
+      await mostrarReacaoLumi(
+        context,
+        mood: LumiMood.celebrando,
+        titulo: 'Olha só! A luz acendeu!',
+        mensagem:
+            'Entrada, processamento, saída. Você acabou de escrever seu primeiro algoritmo.',
+      );
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const Phase1RewardScreen()),
       );
     } else {
+      final dica = _dicas[_tentativasErradas.clamp(0, _dicas.length - 1)];
       setState(() {
         _hasError = true;
+        _tentativasErradas++;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Ops! A ordem ainda não está certa. Lembre-se: Entrada -> Processamento -> Saída.',
-          ),
-          backgroundColor: Colors.redAccent,
-        ),
+      await mostrarReacaoLumi(
+        context,
+        mood: LumiMood.alerta,
+        titulo: 'Ops! A ordem ainda não está certa',
+        mensagem: dica,
+        textoBotao: 'TENTAR DE NOVO',
       );
     }
   }
@@ -74,14 +93,15 @@ class _Phase1ScreenState extends State<Phase1Screen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 1. AQUI ESTÁ A BARRA DE PROGRESSO QUE CRIÁMOS:
               const PhaseProgressBar(currentStep: 1),
               const SizedBox(height: 12),
 
-              // 2. O card da Lumi logo abaixo:
-              const LumiDialogCard(
-                text:
-                    '"Na computação e automação, a ordem dos passos importa muito! Arraste as instruções para colocar o fluxo na ordem certa."',
+              // A Lumi muda de humor depois de um erro e mostra a dica no balão.
+              LumiDialogCard(
+                mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
+                text: _hasError
+                    ? _dicas[(_tentativasErradas - 1).clamp(0, _dicas.length - 1)]
+                    : 'O raio embaralhou os passos da rotina do corredor! Arraste as instruções para a ordem certa: a casa precisa perceber, pensar e só então agir.',
               ),
               const SizedBox(height: 20),
 
@@ -101,7 +121,6 @@ class _Phase1ScreenState extends State<Phase1Screen> {
                     }
                     final String item = _userOrder.removeAt(oldIndex);
                     _userOrder.insert(newIndex, item);
-                    _hasError = false;
                   });
                 },
                 children: [

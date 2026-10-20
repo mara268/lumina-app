@@ -6,10 +6,10 @@ void main() {
     // Constrói o aplicativo Lúmina e renderiza o primeiro frame
     await tester.pumpWidget(const LuminaApp());
 
-    // Verifica se o título Lúmina está presente na tela
-    expect(find.text('Lúmina'), findsOneWidget);
+    // Verifica se o título da tela inicial está presente
+    expect(find.textContaining('A Residência Inteligente'), findsOneWidget);
 
-    // Verifica se o botão de início da jornada está visível
-    expect(find.text('INICIAR JORNADA'), findsOneWidget);
+    // Verifica se o botão para conhecer a mentora está visível
+    expect(find.text('CONHECER A MENTORA'), findsOneWidget);
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/lumi_dialog_card.dart';
+import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
 import 'phase2_reward_screen.dart';
 
@@ -11,23 +12,113 @@ class Phase2Screen extends StatefulWidget {
 }
 
 class _Phase2ScreenState extends State<Phase2Screen> {
-  bool _comandoEnviado = false;
+  // Dispositivos da casa e seus endereços
+  static const List<String> _dispositivos = ['Luz da sala', 'Ventilador', 'Janela'];
+  static const List<String> _acoes = ['LIGAR', 'DESLIGAR'];
 
-  void _enviarComando() {
+  String? _dispositivo;
+  String? _acao;
+  bool _ventiladorLigado = false;
+  bool _hasError = false;
+  String _dicaAtual = '';
+  int _tentativasErradas = 0;
+
+  // Dicas progressivas (1º erro = pergunta, 2º = pista, 3º+ = resposta guiada)
+  static const List<String> _dicasDispositivo = [
+    'A luz da sala acendeu... mas a gente queria vento, não luz. Para quem foi o comando?',
+    'Pista: o aparelho que faz vento é o de endereço 2.',
+    'Escolha o Ventilador (end. 2) como destino do comando.',
+  ];
+  static const List<String> _dicasAcao = [
+    'O ventilador recebeu o recado, mas o recado foi "fica quieto". Que ação faz ele girar?',
+    'Pista: para começar a funcionar, o comando é o contrário de desligar.',
+    'Escolha a ação LIGAR.',
+  ];
+
+  int _endereco(String dispositivo) => _dispositivos.indexOf(dispositivo) + 1;
+
+  Future<void> _enviarComando() async {
+    if (_dispositivo == null || _acao == null) {
+      setState(() {
+        _hasError = true;
+        _dicaAtual = 'Um comando precisa de duas partes: para QUEM (o dispositivo) e O QUÊ (a ação). Escolha as duas!';
+      });
+      return;
+    }
+
+    final dispositivoCerto = _dispositivo == 'Ventilador';
+    final acaoCerta = _acao == 'LIGAR';
+
+    if (dispositivoCerto && acaoCerta) {
+      setState(() {
+        _ventiladorLigado = true;
+        _hasError = false;
+      });
+      await mostrarReacaoLumi(
+        context,
+        mood: LumiMood.celebrando,
+        titulo: 'Sentiu o vento?',
+        mensagem: 'Foi você que mandou! Um comando diz para QUEM e O QUÊ fazer, e o ventilador obedeceu.',
+      );
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Phase2RewardScreen()),
+      );
+      return;
+    }
+
+    final dicas = dispositivoCerto ? _dicasAcao : _dicasDispositivo;
+    final dica = dicas[_tentativasErradas.clamp(0, dicas.length - 1)];
     setState(() {
-      _comandoEnviado = true;
+      _hasError = true;
+      _dicaAtual = dica;
+      _tentativasErradas++;
     });
+    await mostrarReacaoLumi(
+      context,
+      mood: LumiMood.alerta,
+      titulo: 'Ops! O comando não funcionou',
+      mensagem: dica,
+      textoBotao: 'TENTAR DE NOVO',
+    );
   }
 
-  void _avancarFase() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Phase2RewardScreen()),
+  Widget _seletor({
+    required String titulo,
+    required List<String> opcoes,
+    required String? selecionado,
+    required ValueChanged<String> onSelect,
+    String Function(String)? rotulo,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(titulo, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final opcao in opcoes)
+              ChoiceChip(
+                label: Text(rotulo != null ? rotulo(opcao) : opcao),
+                selected: selecionado == opcao,
+                selectedColor: const Color(0xFFFFCCBC),
+                onSelected: _ventiladorLigado ? null : (_) => onSelect(opcao),
+              ),
+          ],
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final comandoTexto = (_dispositivo == null || _acao == null)
+        ? 'ENVIAR → ? | ?'
+        : 'ENVIAR → end. ${_endereco(_dispositivo!)} | $_acao';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fase 2: Comandos & Instruções'),
@@ -43,11 +134,14 @@ class _Phase2ScreenState extends State<Phase2Screen> {
             children: [
               const PhaseProgressBar(currentStep: 2, totalSteps: 5),
               const SizedBox(height: 12),
-              
-              const LumiDialogCard(
-                text: '"Agora que sabemos a ordem, precisamos enviar a instrução correta para o atuador. Envie o comando para ligar a climatização!"',
+
+              LumiDialogCard(
+                mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
+                text: _hasError
+                    ? _dicaAtual
+                    : 'Tá abafado aqui! Cada aparelho da casa tem um endereço, como uma casa numa rua. Monte o comando: para QUEM e O QUÊ.',
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
 
               Card(
                 elevation: 2,
@@ -55,29 +149,52 @@ class _Phase2ScreenState extends State<Phase2Screen> {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Icon(
-                        _comandoEnviado ? Icons.ac_unit : Icons.mode_fan_off,
+                        _ventiladorLigado ? Icons.air : Icons.mode_fan_off,
                         size: 64,
-                        color: _comandoEnviado ? Colors.blue : Colors.grey,
+                        color: _ventiladorLigado ? Colors.blue : Colors.grey,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       Text(
-                        _comandoEnviado ? 'Status: MODO ECONÔMICO ATIVADO' : 'Status: DESLIGADO',
+                        _ventiladorLigado ? 'Ventilador: LIGADO' : 'Ventilador: DESLIGADO',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: _comandoEnviado ? Colors.blue : Colors.grey.shade700,
+                          color: _ventiladorLigado ? Colors.blue : Colors.grey.shade700,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        onPressed: _comandoEnviado ? null : _enviarComando,
-                        icon: const Icon(Icons.send),
-                        label: const Text('ENVIAR COMANDO (0x01)'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
+                      const Divider(height: 28),
+                      _seletor(
+                        titulo: '1. Para quem? (dispositivo)',
+                        opcoes: _dispositivos,
+                        selecionado: _dispositivo,
+                        rotulo: (d) => '$d (end. ${_endereco(d)})',
+                        onSelect: (d) => setState(() => _dispositivo = d),
+                      ),
+                      const SizedBox(height: 16),
+                      _seletor(
+                        titulo: '2. O quê? (ação)',
+                        opcoes: _acoes,
+                        selecionado: _acao,
+                        onSelect: (a) => setState(() => _acao = a),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E1E1E),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          comandoTexto,
+                          style: const TextStyle(
+                            color: Colors.greenAccent,
+                            fontFamily: 'monospace',
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                     ],
@@ -86,17 +203,22 @@ class _Phase2ScreenState extends State<Phase2Screen> {
               ),
               const SizedBox(height: 24),
 
-              if (_comandoEnviado)
-                ElevatedButton.icon(
-                  onPressed: _avancarFase,
-                  icon: const Icon(Icons.arrow_forward),
-                  label: const Text('VER RECOMPENSA DA FASE 2'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE65100),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+              ElevatedButton.icon(
+                onPressed: _ventiladorLigado ? null : _enviarComando,
+                icon: const Icon(Icons.send),
+                label: const Text(
+                  'ENVIAR COMANDO',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE65100),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+              ),
             ],
           ),
         ),

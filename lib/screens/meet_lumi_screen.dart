@@ -1,8 +1,34 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'phase1_screen.dart';
 
-class MeetLumiScreen extends StatelessWidget {
+class MeetLumiScreen extends StatefulWidget {
   const MeetLumiScreen({super.key});
+
+  @override
+  State<MeetLumiScreen> createState() => _MeetLumiScreenState();
+}
+
+class _MeetLumiScreenState extends State<MeetLumiScreen>
+    with SingleTickerProviderStateMixin {
+  // Faz a Lumi flutuar devagar dentro do círculo e o brilho pulsar.
+  late final AnimationController _float;
+
+  @override
+  void initState() {
+    super.initState();
+    _float = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2600),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _float.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +46,42 @@ class MeetLumiScreen extends StatelessWidget {
               Column(
                 children: [
                   const SizedBox(height: 10),
-                  // Avatar da Lumi
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFCCBC),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFFE65100), width: 3),
-                    ),
-                    child: const Icon(
-                      Icons.auto_awesome_rounded,
-                      size: 55,
-                      color: Color(0xFFE65100),
+                  // Retrato da Lumi dentro do círculo
+                  AnimatedBuilder(
+                    animation: _float,
+                    builder: (context, child) {
+                      final wave = math.sin(_float.value * 2 * math.pi);
+                      final pulse = 0.5 + 0.5 * wave;
+                      return Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const RadialGradient(
+                            colors: [Color(0xFFFFF3EC), Color(0xFFFFCCBC)],
+                          ),
+                          border: Border.all(color: const Color(0xFFE65100), width: 3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF7FE7FF).withAlpha((60 + 70 * pulse).round()),
+                              blurRadius: 18 + 8 * pulse,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child: Transform.translate(
+                            offset: Offset(0, 4 + wave * 4),
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Image.asset(
+                      'assets/images/lumi/lumi_retrato.png',
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.medium,
+                      semanticLabel: 'Lumi, sua mentora',
                     ),
                   ),
                   const SizedBox(height: 20),

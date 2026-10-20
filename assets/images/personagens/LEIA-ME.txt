@@ -1,0 +1,10 @@
+Personagens do Lúmina (PNG com fundo transparente, corpo inteiro, em pé).
+Enquanto um arquivo não existir, o app mostra uma silhueta no lugar.
+
+neta_a_neutra.png   neta_a_surpresa.png   neta_a_feliz.png
+neta_b_neutra.png   neta_b_surpresa.png   neta_b_feliz.png
+neta_c_neutra.png   neta_c_surpresa.png   neta_c_feliz.png
+helena_neutra.png   helena_surpresa.png   helena_feliz.png
+valdir.png
+
+Se faltar a versão "surpresa" ou "feliz", o app usa a "neutra".

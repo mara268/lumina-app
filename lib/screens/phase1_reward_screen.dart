@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../story/roteiro.dart';
 import 'fase_concluida_screen.dart';
-import 'phase2_screen.dart';
+import 'passagem_screen.dart';
 
 class Phase1RewardScreen extends StatelessWidget {
   const Phase1RewardScreen({super.key});
@@ -18,10 +19,13 @@ class Phase1RewardScreen extends StatelessWidget {
       porQueFunciona:
           'O computador executa exatamente o que mandamos, na ordem em que mandamos. Se a lâmpada viesse primeiro, ela acenderia sem saber se tinha alguém ali.',
       noDiaADia:
-          'A porta automática do mercado faz a mesma sequência: o sensor percebe você chegando, a placa decide e o motor abre a porta.',
+          'Sabe a porta automática do mercado? Ela segue a mesma ordem: primeiro o sensor percebe que você chegou, depois o sistema decide que é hora de abrir e, por último, o motor abre a porta. Se a ordem fosse outra, ela abriria antes de alguém chegar!',
       iconeDiaADia: Icons.storefront_outlined,
-      textoBotao: 'AVANÇAR PARA A FASE 2',
-      proximaTela: (context) => const Phase2Screen(),
+      // texto do botão e próxima passagem vêm do Twine (passagem "Fase 1")
+      textoBotao: Roteiro.instancia.linkDepoisDaFase(1)?.texto ?? 'CONTINUAR',
+      proximaTela: (context) => PassagemScreen(
+        nome: Roteiro.instancia.linkDepoisDaFase(1)?.destino ?? 'Final',
+      ),
     );
   }
 }

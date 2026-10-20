@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../models/game_state.dart';
+import '../story/historia.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -23,6 +25,64 @@ class _Phase3ScreenState extends State<Phase3Screen> {
   bool _hasError = false;
   String _dicaAtual = '';
   int _tentativasErradas = 0;
+  bool _atalhoDecidido = false; // escolha 2 do roteiro
+
+  Future<void> _decidirAtalho(bool aceitou) async {
+    GameState.instance.escolherAtalho(aceitou);
+    if (aceitou) {
+      // a luz fica acesa até de dia: a energia do gerador cai 20
+      setState(() => _luminosidade = 100);
+      await mostrarReacaoLumi(
+        context,
+        mood: LumiMood.alerta,
+        titulo: 'Sol a pino e a luz acesa...',
+        mensagem: Historia.reacaoAceitouAtalho,
+        textoBotao: 'FAZER A CASA DECIDIR',
+        energia: -20,
+      );
+    } else {
+      await mostrarReacaoLumi(
+        context,
+        mood: LumiMood.celebrando,
+        titulo: 'Boa escolha!',
+        mensagem: Historia.reacaoRecusouAtalho,
+        textoBotao: 'MONTAR A DECISÃO',
+        energia: 0,
+      );
+    }
+    if (!mounted) return;
+    setState(() {
+      _atalhoDecidido = true;
+      _luminosidade = 80;
+    });
+  }
+
+  Widget _escolhaAtalho() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OutlinedButton(
+          onPressed: () => _decidirAtalho(true),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 52),
+            side: const BorderSide(color: Color(0xFFE65100), width: 1.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ),
+          child: const Text('"Vamos deixar ligada direto."', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          onPressed: () => _decidirAtalho(false),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 52),
+            side: const BorderSide(color: Color(0xFFE65100), width: 1.5),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ),
+          child: const Text('"Melhor a casa decidir sozinha."', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+        ),
+      ],
+    );
+  }
 
   bool get _programaCompleto => _limite != null && _acaoEntao != null && _acaoSenao != null;
 
@@ -81,6 +141,7 @@ class _Phase3ScreenState extends State<Phase3Screen> {
       _dicaAtual = dica;
       _tentativasErradas++;
     });
+    GameState.instance.registrarErro(3);
     await mostrarReacaoLumi(
       context,
       mood: LumiMood.alerta,
@@ -151,13 +212,17 @@ class _Phase3ScreenState extends State<Phase3Screen> {
               const SizedBox(height: 12),
 
               LumiDialogCard(
-                mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
-                text: _hasError
+                mood: !_atalhoDecidido || _hasError ? LumiMood.pensando : LumiMood.instruindo,
+                text: !_atalhoDecidido
+                    ? 'A noite está chegando e o quintal vai ficar um breu. ${Historia.propostaAtalho}'
+                    : _hasError
                     ? _dicaAtual
                     : 'A noite está chegando e o quintal vai ficar um breu. O sensor mede a luz de 0 (escuro) a 100 (sol forte). Monte a decisão para a luz da varanda!',
               ),
               const SizedBox(height: 20),
 
+              if (!_atalhoDecidido) _escolhaAtalho(),
+              if (_atalhoDecidido) ...[
               // Bloco de decisão
               Card(
                 elevation: 2,
@@ -262,6 +327,7 @@ class _Phase3ScreenState extends State<Phase3Screen> {
                   ),
                 ),
               ),
+              ],
             ],
           ),
         ),

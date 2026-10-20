@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/game_state.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -75,6 +76,7 @@ class _Phase2ScreenState extends State<Phase2Screen> {
       _dicaAtual = dica;
       _tentativasErradas++;
     });
+    GameState.instance.registrarErro(2);
     await mostrarReacaoLumi(
       context,
       mood: LumiMood.alerta,

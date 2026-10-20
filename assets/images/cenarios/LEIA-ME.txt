@@ -1,0 +1,8 @@
+Cenários do Lúmina (JPG, formato retrato 3:4 ou 9:16).
+Enquanto um arquivo não existir, o app mostra um fundo colorido com ícone.
+
+entardecer.jpg   fachada da casa no cerrado, fim de tarde
+tempestade.jpg   sala/corredor no escuro, noite de tempestade
+escritorio.jpg   escritório da vó Helena com a central da casa
+sala.jpg         sala com telefone fixo antigo
+amanhecer.jpg    fachada da casa ao amanhecer, tudo aceso

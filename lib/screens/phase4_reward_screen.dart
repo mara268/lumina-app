@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../story/roteiro.dart';
 import 'fase_concluida_screen.dart';
-import 'phase5_screen.dart';
+import 'passagem_screen.dart';
 
 class Phase4RewardScreen extends StatelessWidget {
   const Phase4RewardScreen({super.key});
@@ -15,12 +16,15 @@ class Phase4RewardScreen extends StatelessWidget {
       codigo: 'QUANDO sensor de chuva detectar água\n'
           '    FAÇA fechar a janela',
       porQueFunciona:
-          'Na fase anterior, a casa conferia a luz o tempo todo. Um evento é diferente: ele acontece de surpresa e dispara a ação na mesma hora, sem ninguém precisar ficar olhando.',
-      noDiaADia:
           'Um evento é algo que acontece de surpresa, como a chuva começar. A casa não precisa ficar perguntando a cada minuto “está chovendo?”: o sensor avisa no exato momento em que sente a água, e a janela fecha na hora. Por isso a reação é rápida e ninguém precisa ficar de olho.',
+      noDiaADia:
+          'A notificação do celular é um evento: quando chega uma mensagem, o celular vibra sozinho, sem você ficar abrindo o app para conferir.',
       iconeDiaADia: Icons.notifications_active_outlined,
-      textoBotao: 'AVANÇAR PARA A ÚLTIMA FASE',
-      proximaTela: (context) => const Phase5Screen(),
+      // texto do botão e próxima passagem vêm do Twine (passagem "Fase 4")
+      textoBotao: Roteiro.instancia.linkDepoisDaFase(4)?.texto ?? 'CONTINUAR',
+      proximaTela: (context) => PassagemScreen(
+        nome: Roteiro.instancia.linkDepoisDaFase(4)?.destino ?? 'Final',
+      ),
     );
   }
 }

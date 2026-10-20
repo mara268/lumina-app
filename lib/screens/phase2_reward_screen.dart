@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../story/roteiro.dart';
 import 'fase_concluida_screen.dart';
-import 'phase3_screen.dart';
+import 'passagem_screen.dart';
 
 class Phase2RewardScreen extends StatelessWidget {
   const Phase2RewardScreen({super.key});
@@ -20,8 +21,11 @@ class Phase2RewardScreen extends StatelessWidget {
       noDiaADia:
           'O controle remoto faz isso: cada botão envia um comando com uma ação, e só o aparelho certo responde.',
       iconeDiaADia: Icons.settings_remote_outlined,
-      textoBotao: 'AVANÇAR PARA A FASE 3',
-      proximaTela: (context) => const Phase3Screen(),
+      // texto do botão e próxima passagem vêm do Twine (passagem "Fase 2")
+      textoBotao: Roteiro.instancia.linkDepoisDaFase(2)?.texto ?? 'CONTINUAR',
+      proximaTela: (context) => PassagemScreen(
+        nome: Roteiro.instancia.linkDepoisDaFase(2)?.destino ?? 'Final',
+      ),
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../models/game_state.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
-import 'final_victory_screen.dart';
+import 'phase5_reward_screen.dart';
 
 /// Um bloco da biblioteca da jogadora.
 class _Bloco {
@@ -81,12 +82,12 @@ class _Phase5ScreenState extends State<Phase5Screen> {
         mood: LumiMood.celebrando,
         titulo: 'A casa despertou!',
         mensagem: 'Sequência, comandos, decisões e eventos funcionando juntos. Lembrei... lembrei de tudo!',
-        textoBotao: 'VER A MENSAGEM DA VÓ HELENA',
+        textoBotao: 'VER COMO VOCÊ RESOLVEU',
       );
       if (!mounted) return;
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const FinalVictoryScreen()),
+        MaterialPageRoute(builder: (context) => const Phase5RewardScreen()),
       );
       return;
     }
@@ -105,6 +106,7 @@ class _Phase5ScreenState extends State<Phase5Screen> {
       _hasError = true;
       _dicaAtual = erro;
     });
+    GameState.instance.registrarErro(5);
     await mostrarReacaoLumi(
       context,
       mood: LumiMood.alerta,

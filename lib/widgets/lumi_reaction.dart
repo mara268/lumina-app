@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../models/game_state.dart';
 import 'lumi_avatar.dart';
 
 /// Mostra a Lumi em tela cheia reagindo ao que a jogadora fez.
@@ -33,7 +34,18 @@ Future<void> mostrarReacaoLumi(
   required String titulo,
   required String mensagem,
   String textoBotao = 'CONTINUAR',
+  int? energia,
 }) {
+  // Energia do gerador: acerto devolve 10, erro gasta 5 (ou o valor informado).
+  final variacao = energia ??
+      (mood == LumiMood.celebrando
+          ? 10
+          : mood == LumiMood.alerta
+              ? -5
+              : 0);
+  if (variacao > 0) GameState.instance.ganharEnergia(variacao);
+  if (variacao < 0) GameState.instance.gastarEnergia(-variacao);
+
   if (mood == LumiMood.celebrando) {
     HapticFeedback.lightImpact();
   } else if (mood == LumiMood.alerta) {
@@ -52,6 +64,7 @@ Future<void> mostrarReacaoLumi(
         titulo: titulo,
         mensagem: mensagem,
         textoBotao: textoBotao,
+        variacaoEnergia: variacao,
       );
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -76,12 +89,14 @@ class _LumiReactionView extends StatefulWidget {
   final String titulo;
   final String mensagem;
   final String textoBotao;
+  final int variacaoEnergia;
 
   const _LumiReactionView({
     required this.mood,
     required this.titulo,
     required this.mensagem,
     required this.textoBotao,
+    this.variacaoEnergia = 0,
   });
 
   @override
@@ -111,6 +126,29 @@ class _LumiReactionViewState extends State<_LumiReactionView>
   void dispose() {
     _confetti.dispose();
     super.dispose();
+  }
+
+  Widget _chipEnergia(int variacao) {
+    final positivo = variacao > 0;
+    final cor = positivo ? const Color(0xFF2E9E6A) : const Color(0xFFE5483A);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: cor.withAlpha(25),
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: cor.withAlpha(120)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.bolt, size: 16, color: cor),
+          Text(
+            '${positivo ? '+' : '−'}${variacao.abs()} de energia do gerador',
+            style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold, color: cor),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -175,6 +213,10 @@ class _LumiReactionViewState extends State<_LumiReactionView>
                                 color: accent,
                               ),
                             ),
+                            if (widget.variacaoEnergia != 0) ...[
+                              const SizedBox(height: 8),
+                              _chipEnergia(widget.variacaoEnergia),
+                            ],
                             const SizedBox(height: 10),
                             Text(
                               widget.mensagem,

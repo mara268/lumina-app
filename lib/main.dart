@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'story/roteiro.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Carrega a história escrita no Twine (assets/historia/lumina.twee).
+  // Se der problema, o app abre mesmo assim e mostra o aviso na hora da cena.
+  try {
+    await Roteiro.carregar();
+  } catch (erro) {
+    debugPrint('Não consegui carregar a história do Twine: $erro');
+  }
+
   runApp(const LuminaApp());
 }
 

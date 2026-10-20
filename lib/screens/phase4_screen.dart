@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/game_state.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -87,6 +88,7 @@ class _Phase4ScreenState extends State<Phase4Screen> {
       _dicaAtual = dica;
       _tentativasErradas++;
     });
+    GameState.instance.registrarErro(4);
     await mostrarReacaoLumi(
       context,
       mood: LumiMood.alerta,
@@ -168,7 +170,12 @@ class _Phase4ScreenState extends State<Phase4Screen> {
                       _chips(
                         opcoes: _janelas,
                         selecionado: _janela,
-                        onSelect: (v) => setState(() => _janela = v),
+                        onSelect: (v) {
+                          setState(() => _janela = v);
+                          GameState.instance.escolherJanela(
+                            v == 'Estufa' ? JanelaProtegida.estufa : JanelaProtegida.escritorio,
+                          );
+                        },
                       ),
                       const Divider(height: 28),
                       _titulo('QUANDO', cor: const Color(0xFF0277BD)),

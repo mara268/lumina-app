@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6EC6FF"/>
+      <stop offset="0.55" stop-color="#BFE6FF"/>
+      <stop offset="0.75" stop-color="#FFE0B2"/>
+      <stop offset="0.85" stop-color="#FFCC80"/>
+    </linearGradient>
+    <radialGradient id="sol" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFDE7"/><stop offset="1" stop-color="#FFD54F"/>
+    </radialGradient>
+    <radialGradient id="brilhoSol" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF59D" stop-opacity="0.7"/><stop offset="1" stop-color="#FFF59D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chao" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8BAA4A"/><stop offset="1" stop-color="#5B7A30"/>
+    </linearGradient>
+    <radialGradient id="janela" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF3C4" stop-opacity="0.7"/><stop offset="1" stop-color="#FFF3C4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#ceu)"/>
+  <circle cx="700" cy="780" r="260" fill="url(#brilhoSol)"/>
+  <circle cx="700" cy="790" r="80" fill="url(#sol)"/>
+  <!-- nuvens claras -->
+  <g fill="#FFFFFF" opacity="0.85">
+    <ellipse cx="200" cy="260" rx="120" ry="34"/><circle cx="170" cy="240" r="40"/><circle cx="230" cy="232" r="48"/>
+    <ellipse cx="650" cy="180" rx="100" ry="28"/><circle cx="630" cy="165" r="32"/><circle cx="680" cy="160" r="38"/>
+  </g>
+  <!-- pássaros -->
+  <g stroke="#37474F" stroke-width="3" fill="none" stroke-linecap="round">
+    <path d="M420 320 q 10 -10 20 0 q 10 -10 20 0"/><path d="M480 290 q 8 -8 16 0 q 8 -8 16 0"/>
+  </g>
+  <!-- morros -->
+  <path d="M0 850 Q 150 790 320 830 T 640 820 T 900 800 L900 1200 L0 1200 Z" fill="#A5C46A"/>
+  <path d="M0 900 Q 200 860 420 890 T 900 870 L900 1200 L0 1200 Z" fill="#94B85A"/>
+  <rect y="930" width="900" height="270" fill="url(#chao)"/>
+  <!-- ipê amarelo (esquerda) -->
+  <path d="M110 950 C 105 880, 130 850, 115 800 C 105 770, 140 745, 150 720" stroke="#5D4037" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <g fill="#FFC107"><circle cx="150" cy="700" r="50"/><circle cx="100" cy="725" r="40"/><circle cx="195" cy="725" r="36"/><circle cx="60" cy="760" r="30"/></g>
+  <g fill="#FFE082"><circle cx="140" cy="685" r="24"/><circle cx="95" cy="715" r="14"/><circle cx="190" cy="710" r="14"/></g>
+  <!-- ipê rosa (direita) -->
+  <path d="M800 955 C 805 895, 780 865, 795 820" stroke="#5D4037" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <g fill="#EC407A"><circle cx="795" cy="800" r="46"/><circle cx="750" cy="815" r="32"/><circle cx="842" cy="818" r="34"/></g>
+  <g fill="#F48FB1"><circle cx="785" cy="788" r="20"/><circle cx="835" cy="808" r="12"/></g>
+  <!-- casa com tudo aceso -->
+  <g>
+    <rect x="235" y="760" width="430" height="190" fill="#F3D9B1"/>
+    <path d="M205 770 L 450 640 L 695 770 Z" fill="#A84634"/>
+    <path d="M205 770 L 450 640 L 695 770 L 680 778 L 450 656 L 220 778 Z" fill="#8E3B2F"/>
+    <rect x="560" y="660" width="38" height="70" fill="#8E3B2F"/>
+    <rect x="410" y="830" width="70" height="120" rx="6" fill="#6D4C41"/>
+    <circle cx="468" cy="892" r="4" fill="#FFC46B"/>
+    <circle cx="320" cy="840" r="70" fill="url(#janela)"/>
+    <circle cx="590" cy="840" r="70" fill="url(#janela)"/>
+    <rect x="285" y="805" width="70" height="70" rx="4" fill="#FFE9A8"/>
+    <rect x="555" y="805" width="70" height="70" rx="4" fill="#FFE9A8"/>
+    <path d="M320 805 V875 M285 840 H355 M590 805 V875 M555 840 H625" stroke="#A1887F" stroke-width="5"/>
+    <rect x="225" y="945" width="450" height="10" fill="#BCAAA4"/>
+  </g>
+  <!-- flores amarelas caídas no chão -->
+  <g fill="#FFC107" opacity="0.8">
+    <circle cx="80" cy="980" r="5"/><circle cx="130" cy="995" r="4"/><circle cx="170" cy="975" r="5"/><circle cx="60" cy="1010" r="4"/>
+  </g>
+  <g fill="#EC407A" opacity="0.8"><circle cx="770" cy="990" r="5"/><circle cx="820" cy="1005" r="4"/></g>
+</svg>

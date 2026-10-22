@@ -155,7 +155,7 @@ class _InicioScreenState extends State<InicioScreen> {
         ),
         const SizedBox(height: 6),
         const Text(
-          'Como você quer aparecer na história?',
+          'Escolha o seu avatar',
           style: TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 20),
@@ -170,7 +170,7 @@ class _InicioScreenState extends State<InicioScreen> {
         ElevatedButton(
           onPressed: _avatar == null ? null : _comecarHistoria,
           style: _estiloBotao,
-          child: const Text('CHEGAR À CASA DA VÓ', style: TextStyle(fontWeight: FontWeight.bold)),
+          child: const Text('IR PARA A CASA DA VOVÓ', style: TextStyle(fontWeight: FontWeight.bold)),
         ),
       ],
     );

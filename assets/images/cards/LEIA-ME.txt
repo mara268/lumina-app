@@ -1,0 +1,13 @@
+Retratos dos cards "Conexões Invisíveis"
+
+Coloque aqui (quadradas, rosto no centro, de preferência 800x800):
+  card_1.jpg  -> Ada Lovelace
+  card_2.jpg  -> Grace Hopper
+  card_3.jpg  -> Dorothy Vaughan
+  card_4.jpg  -> Margaret Hamilton
+
+O card 5 é da jogadora e usa o retrato do avatar escolhido
+(assets/images/personagens/retrato_neta_X_feliz.png).
+
+Se um arquivo não existir, o card mostra as iniciais.
+Depois de colocar uma imagem nova, pare o app (q) e rode flutter run de novo.

@@ -94,11 +94,7 @@ class HomeScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  'PIBIC · UDF · STEAM para meninas',
-                  style: TextStyle(fontSize: 12, color: Colors.white38),
-                ),
+                const SizedBox(height: 12),
               ],
             ),
           ),

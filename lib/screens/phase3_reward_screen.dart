@@ -12,11 +12,15 @@ class Phase3RewardScreen extends StatelessWidget {
       numeroFase: 3,
       conceito: 'Condição (SE / SENÃO)',
       comoResolveu:
-          'Você ensinou a casa a decidir sozinha: ela olha o sensor de luz e escolhe entre ligar ou desligar a varanda.',
+          'A noite estava chegando e a luz da varanda precisava acender sozinha, mas só quando escurecesse. Para isso, você montou uma decisão em três partes:\n'
+          '1. SE: a pergunta. O sensor mede a luz de 0 (escuro) a 100 (sol forte), e você escolheu um limite baixo, que só acontece de noite (por exemplo, 40).\n'
+          '2. ENTÃO: o que fazer quando a resposta é "sim, está escuro": LIGAR a luz.\n'
+          '3. SENÃO: o que fazer quando a resposta é "não, ainda está claro": DESLIGAR a luz.\n'
+          'Quando a noite chegou, a casa fez a pergunta sozinha, viu que estava escuro e acendeu a varanda.',
       codigo: 'SE luminosidade < 40 ENTÃO\n'
-          '    LIGAR luz da varanda\n'
+          '    LIGAR luz da varanda     ← escuro\n'
           'SENÃO\n'
-          '    DESLIGAR luz da varanda',
+          '    DESLIGAR luz da varanda  ← claro',
       porQueFunciona:
           'A condição é uma pergunta de sim ou não. Se a resposta for "sim" (está escuro), a casa faz o ENTÃO; se for "não", faz o SENÃO. Assim a luz só gasta energia quando é preciso.',
       noDiaADia:

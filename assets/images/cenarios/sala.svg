@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="parede" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B2438"/><stop offset="1" stop-color="#3A2F45"/>
+    </linearGradient>
+    <linearGradient id="noite" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16213A"/><stop offset="1" stop-color="#2D3E66"/>
+    </linearGradient>
+    <radialGradient id="abajur" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFCC80" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFCC80" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#parede)"/>
+  <!-- papel de parede listrado sutil -->
+  <g stroke="#FFFFFF" stroke-width="2" opacity="0.04">
+    <path d="M60 0 V880 M180 0 V880 M300 0 V880 M420 0 V880 M540 0 V880 M660 0 V880 M780 0 V880"/>
+  </g>
+  <!-- janela com chuva -->
+  <rect x="150" y="200" width="330" height="420" rx="8" fill="url(#noite)"/>
+  <g stroke="#9FB7E0" stroke-width="2.5" opacity="0.55" stroke-linecap="round">
+    <path d="M180 230 l-10 34 M240 260 l-10 34 M300 220 l-10 34 M360 280 l-10 34 M420 240 l-10 34 M200 360 l-10 34 M270 400 l-10 34 M340 350 l-10 34 M440 380 l-10 34 M190 500 l-10 34 M260 540 l-10 34 M330 480 l-10 34 M400 520 l-10 34 M455 470 l-10 34"/>
+  </g>
+  <path d="M315 200 V620 M150 410 H480" stroke="#4A3B2E" stroke-width="12"/>
+  <rect x="150" y="200" width="330" height="420" rx="8" fill="none" stroke="#5D4A3A" stroke-width="14"/>
+  <!-- cortinas -->
+  <path d="M110 170 C 150 300, 100 500, 140 660 L 90 660 C 70 480, 100 320, 70 170 Z" fill="#8E3B5F"/>
+  <path d="M520 170 C 480 300, 530 500, 490 660 L 540 660 C 560 480, 530 320, 560 170 Z" fill="#8E3B5F"/>
+  <rect x="60" y="160" width="520" height="16" rx="8" fill="#5D4A3A"/>
+  <!-- abajur e mesinha com telefone antigo (direita) -->
+  <circle cx="745" cy="520" r="220" fill="url(#abajur)"/>
+  <path d="M700 430 H790 L770 500 H720 Z" fill="#FFCC80"/>
+  <rect x="740" y="500" width="10" height="160" fill="#4E342E"/>
+  <rect x="610" y="660" width="250" height="22" rx="6" fill="#6D4C41"/>
+  <rect x="630" y="682" width="16" height="200" fill="#4E342E"/><rect x="824" y="682" width="16" height="200" fill="#4E342E"/>
+  <!-- telefone de disco -->
+  <path d="M650 660 C 650 615, 690 600, 720 600 C 750 600, 790 615, 790 660 Z" fill="#C62828"/>
+  <circle cx="720" cy="632" r="22" fill="#F5F0E6"/><circle cx="720" cy="632" r="8" fill="#C62828"/>
+  <path d="M640 595 C 660 570, 780 570, 800 595 L 790 608 C 770 590, 670 590, 650 608 Z" fill="#B71C1C"/>
+  <path d="M790 650 C 840 660, 830 720, 800 740" stroke="#212121" stroke-width="4" fill="none"/>
+  <!-- sofá -->
+  <path d="M40 800 Q 40 740 100 740 H 520 Q 580 740 580 800 V 900 H 40 Z" fill="#455A64"/>
+  <rect x="20" y="790" width="80" height="140" rx="30" fill="#37474F"/>
+  <rect x="520" y="790" width="80" height="140" rx="30" fill="#37474F"/>
+  <rect x="90" y="830" width="440" height="90" rx="20" fill="#546E7A"/>
+  <!-- piso -->
+  <rect y="880" width="900" height="320" fill="#2A1F1A"/>
+  <path d="M0 880 H900" stroke="#4E342E" stroke-width="10"/>
+  <ellipse cx="450" cy="1040" rx="380" ry="90" fill="#5D2E46" opacity="0.6"/>
+</svg>

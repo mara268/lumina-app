@@ -1,0 +1,13 @@
+Ilustrações das memórias da vó Helena (a "foto antiga" que aparece em cada memória).
+Gere COLORIDAS, no mesmo estilo dos personagens, formato horizontal 4:3.
+O app aplica sozinho o efeito de foto antiga (tom sépia).
+
+memoria_1.png          1972 - Helena aos 14 anos consertando o rádio do pai
+memoria_2.png          1976 - única mulher na primeira fila da faculdade
+memoria_3.png          1984 - o projeto da casa reprovado
+memoria_4.png          1991 - o diário escrito na noite do temporal
+memoria_4_estufa.png   1991 - Helena e a filha plantando as mudas na estufa
+memoria_5.png          a mensagem gravada em vídeo
+
+O nome do arquivo segue o nome da passagem no Twine ("Memoria 4 Estufa" -> memoria_4_estufa).
+Sem o arquivo, a foto mostra um ícone no lugar.

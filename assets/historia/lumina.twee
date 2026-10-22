@@ -18,13 +18,16 @@ Esta passagem é só um guia: o app ignora passagens com a tag "ajuda".
 Cada linha de diálogo:  Nome (expressão): fala
   Nomes: Narrador, Jogadora, Lumi, Helena, Valdir
   Expressões da Lumi: instruindo, pensando, celebrando, alerta
-  Expressões da Jogadora e da Helena: neutra, surpresa, feliz
+  Expressões da Jogadora e da Helena: neutra, surpresa, feliz (Helena também: trofeu)
   Use {nome} para o nome da jogadora.
 
-Tag da passagem = cenário: entardecer, tempestade, escritorio, sala, amanhecer, memoria
+Tag da passagem = cenário: entardecer, cozinha, tempestade, escritorio, sala, amanhecer, memoria
 Tags especiais: desafio (fase do app), card (card da mulher), final (tela final)
 
-Elenco: Lumi, Jogadora        -> quem aparece no palco (opcional)
+Palco: por padrão, só a personagem que está falando aparece (na fala do narrador, o palco fica vazio).
+Elenco: Lumi, Jogadora        -> (opcional) deixa essas personagens sempre no palco; vale a partir da fala seguinte
+Elenco: quem fala             -> volta ao padrão (só quem fala)
+Elenco: nenhum                -> palco vazio
 Mostrar: bilhete | texto      -> mostra o bilhete (use <br> para pular linha)
 Mostrar: foto | título | ano | ícone   -> foto antiga (ícones: radio, escola, planta, casa, livro, video)
 
@@ -37,8 +40,11 @@ Pular para outra passagem: (go-to: "Nome")
 
 
 :: Chegada [entardecer] {"position":"400,100","size":"100,100"}
-Elenco: Jogadora
 Narrador: Fim de tarde no cerrado. A casa da vó Helena fica longe de tudo: nenhum vizinho por perto, só o céu alaranjado e nuvens escuras no horizonte.
+[[ENTRAR NA CASA->Cozinha]]
+
+
+:: Cozinha [cozinha] {"position":"400,225","size":"100,100"}
 Jogadora: Vó? Cheguei! ... Vó?
 Mostrar: bilhete | {nome}, querida! Tive que viajar às pressas para o congresso. Finalmente vão reconhecer o trabalho de algumas de nós. A casa cuida de você. Se algo der errado, vá ao meu escritório.<br><br>Com amor, Vó Helena.
 Narrador: Ninguém responde. Na porta da geladeira, um bilhete.
@@ -48,7 +54,6 @@ Jogadora (feliz): Bom... pelo menos a geladeira está cheia.
 
 
 :: Tempestade [tempestade] {"position":"550,100","size":"100,100"}
-Elenco: Jogadora
 Narrador: Mais tarde, naquela noite, um trovão sacode a casa. As luzes piscam... e apagam.
 Jogadora (surpresa): Sério? Primeira noite aqui e já fica tudo escuro?
 Narrador: No fim do corredor, uma luz azul fraquinha pisca por baixo da porta do escritório da avó.
@@ -57,13 +62,13 @@ Jogadora: "Se algo der errado, vá ao meu escritório"... Era isso que ela quis 
 
 
 :: Escritorio [escritorio] {"position":"700,100","size":"100,100"}
-Narrador: Bancada cheia de placas, fios, um rádio antigo e fotos na parede. Na parede, a central da casa: só uma luz, ligada ao gerador, pisca fraquinha.
+Narrador: O escritório está do jeito que a vó deixou: placas e fios espalhados pela bancada, o rádio antigo na estante, fotos presas na parede. Ao lado delas, a central da casa. Só uma luzinha resiste, ligada ao gerador, piscando fraquinha.
 Lumi (alerta): Sis... sistema de emergência ativo. Energia: 60%. Quem... quem está aí?
 Jogadora (surpresa): Eu sou {nome}, neta da Helena. Quem é você?
 Lumi (pensando): Eu sou... a Lumi. Eu acho. Minha memória está em pedaços, o raio bagunçou tudo. Mas você... tem o jeito dela.
 Lumi: A casa inteira está dormindo. Luzes, ventilação, janelas: cada sistema perdeu as instruções. Eu sei como a casa funciona, mas não tenho mãos. Você tem.
 Jogadora (surpresa): Eu? Eu não entendo nada disso.
-Lumi (celebrando): Ainda. Sua avó também não entendia, um dia. Vamos juntas?
+Lumi: Ainda. Sua avó também não entendia, um dia. Vamos juntas?
 [[VAMOS JUNTAS->Fase 1]]
 
 
@@ -74,9 +79,9 @@ O desafio da Fase 1 (Sequência lógica) acontece no app.
 
 :: Memoria 1 [memoria] {"position":"550,300","size":"100,100"}
 Mostrar: foto | O rádio do pai | 1972 | radio
-Lumi (pensando): Lembrei de uma coisa... Helena, 14 anos, com o rádio do pai desmontado na mesa da cozinha.
+Lumi (pensando): Lembrei de uma coisa... A Helena tinha 14 anos quando pegou o rádio do pai e desmontou inteirinho na mesa da cozinha, peça por peça.
 Lumi: O pai disse que aquilo era coisa de menino. Ela montou de volta, e o rádio funcionou melhor do que antes.
-Lumi (celebrando): Esse rádio está ali na estante do escritório. Ela nunca jogou fora.
+Lumi: Esse rádio está ali na estante do escritório. Ela nunca jogou fora.
 [[VER O CARD->Card 1]]
 
 
@@ -92,9 +97,9 @@ O desafio da Fase 2 (Comandos e atuadores) acontece no app.
 
 :: Memoria 2 [memoria] {"position":"550,450","size":"100,100"}
 Mostrar: foto | A primeira fila | 1976 | escola
-Lumi (pensando): Faculdade de Engenharia. Helena era a única mulher da turma.
+Lumi (pensando): Na Faculdade de Engenharia. Helena era a única mulher da turma.
 Lumi: No primeiro dia, um professor perguntou se ela tinha errado de sala.
-Lumi (celebrando): Ela respondeu: "Não, professor. Errei de época, cheguei cedo demais." E sentou na primeira fila o curso inteiro.
+Lumi: Ela respondeu: "Não, professor. Errei de época, cheguei cedo demais." E sentou na primeira fila durante o curso inteiro.
 [[VER O CARD->Card 2]]
 
 
@@ -104,7 +109,6 @@ Card da Grace Hopper (o texto do card fica no app).
 
 
 :: Telefonema [sala] {"position":"850,450","size":"100,100"}
-Elenco: Valdir, Jogadora
 Narrador: Trrrim! O telefone fixo antigo da casa toca.
 Valdir: Alô? Aqui é o Valdir, eu faço a manutenção da casa da Dona Helena. Caiu a energia aí, né? Olha, menina, não mexe em nada, isso aí é complicado. Amanhã cedo eu mando alguém.
 [[Pode deixar, eu consigo.->Telefonema Eu Consigo]]
@@ -114,15 +118,13 @@ Valdir: Alô? Aqui é o Valdir, eu faço a manutenção da casa da Dona Helena. 
 
 :: Telefonema Eu Consigo [sala] {"position":"1000,350","size":"100,100"}
 (set: $telefonema to "euConsigo")
-Elenco: Valdir, Lumi, Jogadora
 Valdir: Hum... tá bom, mas cuidado, viu?
-Lumi (celebrando): Sua avó disse essa mesma frase pra ele, em 1989. Com a mesma cara.
+Lumi: Sua avó disse essa mesma frase pra ele, em 1989. Com a mesma cara.
 [[VOLTAR PARA A CASA->Fase 3]]
 
 
 :: Telefonema To Aprendendo [sala] {"position":"1000,475","size":"100,100"}
 (set: $telefonema to "toAprendendo")
-Elenco: Valdir, Lumi, Jogadora
 Valdir: Bom... se precisar, liga.
 Lumi: "Tô aprendendo" é a frase mais poderosa da engenharia. Toda engenheira já disse isso.
 [[VOLTAR PARA A CASA->Fase 3]]
@@ -130,8 +132,7 @@ Lumi: "Tô aprendendo" é a frase mais poderosa da engenharia. Toda engenheira j
 
 :: Telefonema Desligou [sala] {"position":"1000,600","size":"100,100"}
 (set: $telefonema to "desligou")
-Elenco: Lumi, Jogadora
-Lumi (pensando): Tudo bem não ter resposta pronta. Sua avó também ouvia muito isso. Ela respondia consertando as coisas.
+Lumi: Tudo bem não ter resposta pronta. Sua avó também ouvia muito isso. Ela respondia consertando as coisas.
 [[VOLTAR PARA A CASA->Fase 3]]
 
 
@@ -142,14 +143,14 @@ O desafio da Fase 3 (Condição SE / SENÃO) acontece no app. A escolha do atalh
 
 :: Memoria 3 [memoria] {"position":"550,700","size":"100,100"}
 Mostrar: foto | A casa que pensa | 1984 | casa
-Lumi (pensando): Helena apresentou o projeto desta casa como trabalho final. O professor riu: "Uma casa que pensa? Isso é ficção científica, minha filha."
+Lumi (pensando): Helena apresentou o projeto desta casa como trabalho final da Faculdade. O professor riu: "Uma casa que pensa? Isso é ficção científica, minha filha."
 Lumi: Ela refez o trabalho do jeito que ele queria e passou. Depois, construiu esta casa com as próprias mãos.
-Lumi (celebrando): Você está dentro da ficção científica dela agora.
+Lumi: Você está dentro da ficção científica dela agora.
 [[VER O CARD->Card 3]]
 
 
 :: Card 3 [card] {"position":"700,700","size":"100,100"}
-Card da Cláudia Werner (o texto do card fica no app).
+Card da Dorothy Vaughan (o texto do card fica no app).
 [[CONTINUAR A HISTÓRIA->Fase 4]]
 
 
@@ -162,8 +163,8 @@ O desafio da Fase 4 (Eventos) acontece no app. A escolha da janela também.
 (if: $janela is "estufa")[(go-to: "Memoria 4 Estufa")]
 Mostrar: foto | O diário do temporal | 1991 | livro
 Lumi (pensando): Uma página do diário... Helena escreveu: "Hoje caiu o maior temporal que já vi."
-Lumi: "Acordei com tudo fechado e seco. A casa cuidou da gente. Funcionou. FUNCIONOU."
-Lumi (celebrando): Três palavras sublinhadas.
+Lumi: "Acordei com tudo fechado e seco. A casa cuidou da gente. Funcionou! FUNCIONOU!"
+Lumi: Foi a primeira vez que a casa reagiu sozinha à chuva. Igualzinho ao que você acabou de programar.
 [[VER O CARD->Card 4]]
 
 
@@ -171,7 +172,7 @@ Lumi (celebrando): Três palavras sublinhadas.
 Mostrar: foto | As mudas do temporal | 1991 | planta
 Lumi (pensando): Essas mudas foram plantadas pela Helena com a sua mãe, quando ela tinha a sua idade.
 Lumi: No temporal de 1991, a casa fechou a estufa sozinha e elas sobreviveram.
-Lumi (celebrando): Os ipês lá fora são filhos delas.
+Lumi: Os ipês lá fora são filhos delas.
 [[VER O CARD->Card 4]]
 
 
@@ -186,13 +187,12 @@ O desafio da Fase 5 (Rotina da Noite) acontece no app.
 
 
 :: Memoria 5 [memoria] {"position":"550,1100","size":"100,100"}
-Elenco: Lumi, Helena
 Mostrar: foto | A mensagem | há 30 anos | video
-Narrador: Um vídeo antigo, com chiado. Gravado para tocar "quando alguém religasse a casa sozinha".
+Narrador: Um vídeo antigo, com chiado. Gravado para tocar "Quando alguém religasse a casa sozinha".
 Helena: Se você está vendo isto, foi você que acordou a casa. Eu construí esta casa porque me disseram que eu não conseguiria.
 Helena: Mas, no fundo, eu construí para alguém que um dia ia entendê-la.
 Helena (feliz): Eu não sei quem você é. Mas sei que você é capaz. A casa agora é sua para cuidar, e para melhorar.
-Lumi (celebrando): Ela gravou isso há trinta anos. Estava esperando você.
+Lumi: Ela gravou isso há trinta anos. Estava esperando você!
 [[VER O CARD->Card 5]]
 
 
@@ -202,19 +202,18 @@ O card da própria jogadora (gerado no app com o nome dela).
 
 
 :: Epilogo [amanhecer] {"position":"850,1100","size":"100,100"}
-Elenco: Lumi, Helena, Jogadora
 Narrador: O sol nasce no cerrado. A casa está inteira acesa e seca. Um carro chega: é a vó Helena, com a mala e um troféu embrulhado.
 Helena (surpresa): {nome}?! Eu vi a tempestade no noticiário e vim correndo... Quem religou a casa?
-Lumi (celebrando): Ela, Helena. Sozinha. Quer dizer... comigo. Mas as mãos foram dela.
-Helena (feliz): Me deram isso ontem, quarenta anos atrasado. Acho que chegou na pessoa certa.
+Lumi: Ela, Helena. Sozinha. Quer dizer... comigo. Mas as mãos foram dela.
+Helena (trofeu): Me deram isso ontem, quarenta anos atrasado. Acho que chegou na pessoa certa.
 (if: $janela is "estufa")[Helena (feliz): E as mudas... Você salvou o que eu plantei com a sua mãe.]
 (else:)[Helena (feliz): E meu diário está seco! Você salvou minhas ideias.]
 Narrador: O telefone toca. É o Seu Valdir: "Dona Helena? Já tô mandando o rapaz aí pra religar..."
 (if: $telefonema is "euConsigo")[Helena: Não precisa, Valdir. A minha neta disse que conseguia, e conseguiu.]
 (else-if: $telefonema is "desligou")[Helena: Não precisa, Valdir. Ela não respondeu ontem. Respondeu consertando.]
 (else:)[Helena: Não precisa, Valdir. Ela aprendeu.]
-(if: $atalho is "sim")[Lumi (celebrando): E eu aprendi a não sugerir gambiarra para engenheira.]
-(else:)[Lumi (celebrando): E ela não caiu na minha pegadinha da luz acesa.]
+(if: $atalho is "sim")[Lumi: E eu aprendi a não sugerir gambiarra para engenheira.]
+(else:)[Lumi: E ela não caiu na minha pegadinha da luz acesa.]
 Lumi: Helena, posso registrar uma nova administradora do sistema?
 Helena (feliz): Pode. Guardiã da casa: {nome}.
 Jogadora (feliz): Guardiã... Eu gostei disso.

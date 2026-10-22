@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="parede" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0E1522"/><stop offset="1" stop-color="#1B2638"/>
+    </linearGradient>
+    <linearGradient id="parede2" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#0E1522"/><stop offset="1" stop-color="#1B2638"/>
+    </linearGradient>
+    <linearGradient id="piso" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F2A3C"/><stop offset="1" stop-color="#0A0F18"/>
+    </linearGradient>
+    <radialGradient id="luzPorta" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7FE7FF" stop-opacity="0.9"/>
+      <stop offset="0.4" stop-color="#4FC3F7" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#4FC3F7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vidro" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3B4F7A"/><stop offset="1" stop-color="#1C2740"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="#0B111C"/>
+  <!-- teto -->
+  <path d="M0 0 H900 L590 380 H310 Z" fill="#121B2A"/>
+  <!-- paredes laterais -->
+  <path d="M0 0 L310 380 V760 L0 1200 Z" fill="url(#parede)"/>
+  <path d="M900 0 L590 380 V760 L900 1200 Z" fill="url(#parede2)"/>
+  <!-- piso -->
+  <path d="M0 1200 L310 760 H590 L900 1200 Z" fill="url(#piso)"/>
+  <g stroke="#2A364A" stroke-width="3" opacity="0.6">
+    <path d="M450 760 V1200"/><path d="M380 760 L210 1200"/><path d="M520 760 L690 1200"/>
+    <path d="M150 960 H750" opacity="0.5"/><path d="M60 1090 H840" opacity="0.5"/>
+  </g>
+  <!-- parede do fundo -->
+  <rect x="310" y="380" width="280" height="380" fill="#16202F"/>
+  <!-- porta do escritório -->
+  <rect x="385" y="470" width="130" height="290" rx="4" fill="#24314A"/>
+  <rect x="397" y="482" width="106" height="125" rx="3" fill="#1C273B"/>
+  <rect x="397" y="620" width="106" height="125" rx="3" fill="#1C273B"/>
+  <circle cx="500" cy="620" r="5" fill="#7FE7FF" opacity="0.7"/>
+  <!-- luz azul por baixo da porta -->
+  <ellipse cx="450" cy="765" rx="170" ry="45" fill="url(#luzPorta)"/>
+  <rect x="385" y="755" width="130" height="6" fill="#B3F2FF"/>
+  <!-- janela na parede esquerda com relâmpago -->
+  <path d="M90 300 L210 400 V640 L90 610 Z" fill="url(#vidro)"/>
+  <path d="M150 350 L150 625 M90 455 L210 520" stroke="#0B111C" stroke-width="8"/>
+  <path d="M120 330 L140 410 L118 412 L150 520" stroke="#E3F2FD" stroke-width="5" fill="none" stroke-linejoin="round" opacity="0.85"/>
+  <path d="M90 300 L210 400 V640 L90 610 Z" fill="none" stroke="#2C3A55" stroke-width="10"/>
+  <!-- gotas na janela -->
+  <g stroke="#9FB7E0" stroke-width="2" opacity="0.6">
+    <path d="M105 380 l-4 14 M175 430 l-4 14 M130 540 l-4 14 M190 560 l-4 14 M110 470 l-4 14"/>
+  </g>
+  <!-- quadros na parede direita -->
+  <path d="M700 330 L790 270 V420 L700 460 Z" fill="#2B2A36" stroke="#5D4A3A" stroke-width="6"/>
+  <path d="M700 520 L760 495 V600 L700 620 Z" fill="#2B2A36" stroke="#5D4A3A" stroke-width="5"/>
+  <!-- tapete -->
+  <path d="M360 900 H540 L590 1050 H310 Z" fill="#3A2340" opacity="0.7"/>
+</svg>

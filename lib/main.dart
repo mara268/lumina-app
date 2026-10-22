@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'story/recursos.dart';
 import 'story/roteiro.dart';
 
 Future<void> main() async {
@@ -7,6 +8,8 @@ Future<void> main() async {
 
   // Carrega a história escrita no Twine (assets/historia/lumina.twee).
   // Se der problema, o app abre mesmo assim e mostra o aviso na hora da cena.
+  await Recursos.carregar(); // lista das imagens que existem
+
   try {
     await Roteiro.carregar();
   } catch (erro) {

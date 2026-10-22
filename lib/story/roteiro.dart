@@ -198,7 +198,8 @@ class Roteiro {
       final humor = LumiMood.values.where((m) => m.name == expressao);
       return Fala(quem, texto, humor: humor.isEmpty ? LumiMood.instruindo : humor.first);
     }
-    final exp = Expressao.values.where((e) => e.name == expressao);
+    final nomeExp = expressao.replaceAll('é', 'e'); // aceita "troféu" e "trofeu"
+    final exp = Expressao.values.where((e) => e.name == nomeExp);
     return Fala(quem, texto, expressao: exp.isEmpty ? Expressao.neutra : exp.first);
   }
 }

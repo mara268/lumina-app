@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../story/historia.dart';
+import '../story/recursos.dart';
 
 /// Card "Conexões Invisíveis". Começa virado (verso) e gira para mostrar
 /// a frente quando [revelar] é verdadeiro.
@@ -111,6 +112,46 @@ class _CardMulherWidgetState extends State<CardMulherWidget> with SingleTickerPr
     );
   }
 
+  /// Retrato redondo: a imagem do card, se existir; senão, as iniciais.
+  Widget _retrato(CardMulher c, bool compacto) {
+    final temImagem = c.imagem != null && Recursos.carregadoComSucesso && Recursos.existe(c.imagem!);
+    final tamanho = compacto ? 54.0 : (temImagem ? 130.0 : 96.0);
+
+    final iniciais = Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [c.cor, c.cor.withAlpha(150)]),
+      ),
+      child: Text(
+        c.iniciais,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+          fontSize: compacto ? 20 : 34,
+        ),
+      ),
+    );
+
+    return Container(
+      width: tamanho,
+      height: tamanho,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: c.cor.withAlpha(40),
+      ),
+      child: temImagem
+          ? Image.asset(
+              c.imagem!,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              filterQuality: FilterQuality.medium,
+              errorBuilder: (context, erro, pilha) => iniciais,
+            )
+          : iniciais,
+    );
+  }
+
   Widget _frente() {
     final c = widget.card;
     final compacto = widget.compacto;
@@ -124,23 +165,7 @@ class _CardMulherWidgetState extends State<CardMulherWidget> with SingleTickerPr
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: compacto ? 54 : 96,
-            height: compacto ? 54 : 96,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [c.cor, c.cor.withAlpha(150)]),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              c.iniciais,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: compacto ? 20 : 34,
-              ),
-            ),
-          ),
+          _retrato(c, compacto),
           SizedBox(height: compacto ? 6 : 12),
           Text(
             c.nome,

@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/game_state.dart';
 import '../story/historia.dart';
+import '../story/recursos.dart';
 import 'lumi_avatar.dart';
 
-/// Ambiente visual de uma cena: imagem de cenário (se existir) e, como
-/// reserva, um gradiente com ícone.
+/// Ambiente visual de uma cena. Ordem de prioridade do fundo:
+/// 1) imagem .jpg (arte final, quando existir)  2) ilustração .svg  3) gradiente.
 class AmbienteCena {
   final List<Color> fundo; // gradiente de reserva (de cima para baixo)
-  final String? imagem; // assets/images/cenarios/<arquivo>
-  final IconData? icone;
+  final String? imagem; // assets/images/cenarios/<arquivo>.jpg
+  final IconData? icone; // (não usado mais no fundo; mantido para compatibilidade)
   final Color corIcone;
   final bool raios; // relâmpagos piscando (tempestade)
 
@@ -23,11 +25,20 @@ class AmbienteCena {
     this.raios = false,
   });
 
+  /// Ilustração vetorial com o mesmo nome da imagem, trocando .jpg por .svg.
+  String? get ilustracao => imagem?.replaceAll('.jpg', '.svg');
+
   static const entardecer = AmbienteCena(
     fundo: [Color(0xFFFFB74D), Color(0xFFFF8A65), Color(0xFF5D4037)],
     imagem: 'assets/images/cenarios/entardecer.jpg',
     icone: Icons.cottage,
     corIcone: Color(0xFFFFF3E0),
+  );
+  static const cozinha = AmbienteCena(
+    fundo: [Color(0xFF6E4A4F), Color(0xFF3B2A24)],
+    imagem: 'assets/images/cenarios/cozinha.jpg',
+    icone: Icons.kitchen,
+    corIcone: Color(0xFFFFD9A0),
   );
   static const tempestade = AmbienteCena(
     fundo: [Color(0xFF1A2333), Color(0xFF0D1117)],
@@ -77,8 +88,13 @@ class CenaDialogo extends StatefulWidget {
   final VoidCallback onFim;
 
   /// Quem aparece no palco, da esquerda para a direita. Se não for
-  /// informado, aparecem todos os que falam na cena (menos o narrador).
+  /// informado, só a personagem da fala atual aparece.
   final List<Personagem>? elenco;
+
+  /// Trocas de elenco no meio da cena: a partir da fala [chave]
+  /// (0 = primeira), o palco passa a mostrar só essa lista.
+  /// Lista nula = "quem fala": só a personagem da fala atual fica no palco.
+  final Map<int, List<Personagem>?> trocasDeElenco;
 
   /// Conteúdo opcional no alto da cena (bilhete, foto antiga...).
   final Widget? destaque;
@@ -97,6 +113,7 @@ class CenaDialogo extends StatefulWidget {
     required this.onFim,
     this.textoBotaoFinal = 'CONTINUAR',
     this.elenco,
+    this.trocasDeElenco = const {},
     this.destaque,
     this.destaqueAPartirDaFala = 0,
     this.opcoes = const [],
@@ -122,14 +139,30 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
   bool get _completa => _letras >= _textoAtual.length;
 
   List<Personagem> get _elenco {
-    if (widget.elenco != null) return widget.elenco!;
-    final lista = <Personagem>[];
-    for (final f in widget.falas) {
-      if (f.quem != Personagem.narrador && !lista.contains(f.quem)) lista.add(f.quem);
+    // a troca mais recente que já valeu até a fala atual
+    final chaves = widget.trocasDeElenco.keys.where((k) => k <= _indice).toList()..sort();
+    final lista = chaves.isNotEmpty ? widget.trocasDeElenco[chaves.last] : widget.elenco;
+    if (lista != null) return lista;
+    // padrão ("quem fala"): só quem está falando agora; o narrador deixa o palco vazio
+    return _fala.quem == Personagem.narrador ? const [] : [_fala.quem];
+  }
+
+  /// Só sobe ao palco quem tem imagem (a Lumi sempre tem).
+  List<Personagem> get _elencoVisivel => _elenco.where(_temImagem).toList();
+
+  bool _temImagem(Personagem p) {
+    switch (p) {
+      case Personagem.lumi:
+        return true;
+      case Personagem.jogadora:
+        return Recursos.existe('assets/images/personagens/neta_${GameState.instance.avatar}_neutra.png');
+      case Personagem.helena:
+        return Recursos.existe('assets/images/personagens/helena_neutra.png');
+      case Personagem.valdir:
+        return Recursos.existe('assets/images/personagens/valdir.png');
+      case Personagem.narrador:
+        return false;
     }
-    // a jogadora fica sempre à direita
-    if (lista.remove(Personagem.jogadora)) lista.add(Personagem.jogadora);
-    return lista;
   }
 
   @override
@@ -224,6 +257,7 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
     Widget silhueta() => _Silhueta(cor: _cor(p), altura: altura, rotulo: _nome(p));
     Widget tentar(int i) {
       if (i >= caminhos.length) return silhueta();
+      if (!Recursos.existe(caminhos[i])) return tentar(i + 1);
       return Image.asset(
         caminhos[i],
         height: altura,
@@ -251,6 +285,7 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
         final e = (_expressoes[p] ?? Expressao.neutra).name;
         return _imagemComReserva([
           'assets/images/personagens/helena_$e.png',
+          'assets/images/personagens/helena_feliz.png',
           'assets/images/personagens/helena_neutra.png',
         ], p, altura);
       case Personagem.valdir:
@@ -261,7 +296,7 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
   }
 
   Widget _palco(double altura) {
-    final elenco = _elenco;
+    final elenco = _elencoVisivel;
     if (elenco.isEmpty) return SizedBox(height: altura * 0.2);
     return SizedBox(
       height: altura,
@@ -284,16 +319,121 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
 
   // ------------------------------------------------------------ balão
 
+  /// Retrato redondo de quem está falando (mostrado dentro do balão).
+  /// Procura, nesta ordem: retrato próprio → imagem de corpo inteiro
+  /// (mostra só a parte de cima) → iniciais com a cor do personagem.
+  Widget _retratoDe(Fala fala) {
+    final p = fala.quem;
+    final cor = _cor(p);
+    const pasta = 'assets/images/personagens';
+    List<String> retratos = const [];
+    List<String> corpos = const [];
+    String iniciais = '';
+
+    switch (p) {
+      case Personagem.lumi:
+        retratos = ['assets/images/lumi/lumi_retrato_${_humorLumi.name}.png', 'assets/images/lumi/lumi_retrato.png'];
+        iniciais = 'L';
+        break;
+      case Personagem.jogadora:
+        final a = GameState.instance.avatar;
+        final e = (_expressoes[p] ?? Expressao.neutra).name;
+        retratos = ['$pasta/retrato_neta_${a}_$e.png', '$pasta/retrato_neta_$a.png'];
+        corpos = ['$pasta/neta_${a}_$e.png', '$pasta/neta_${a}_neutra.png'];
+        final nome = GameState.instance.nomeOuPadrao;
+        iniciais = nome.isEmpty ? '?' : nome[0].toUpperCase();
+        break;
+      case Personagem.helena:
+        final e = (_expressoes[p] ?? Expressao.neutra).name;
+        retratos = ['$pasta/retrato_helena_$e.png', '$pasta/retrato_helena_feliz.png', '$pasta/retrato_helena.png'];
+        corpos = ['$pasta/helena_$e.png', '$pasta/helena_neutra.png'];
+        iniciais = 'VH';
+        break;
+      case Personagem.valdir:
+        retratos = ['$pasta/retrato_valdir.png'];
+        corpos = ['$pasta/valdir.png'];
+        iniciais = 'V';
+        break;
+      case Personagem.narrador:
+        return const SizedBox.shrink();
+    }
+
+    Widget conteudo;
+    final retrato = retratos.where(Recursos.existe).firstOrNull;
+    final corpo = corpos.where(Recursos.existe).firstOrNull;
+    if (retrato != null) {
+      conteudo = Image.asset(retrato, fit: BoxFit.cover, filterQuality: FilterQuality.medium);
+    } else if (corpo != null) {
+      // imagem de corpo inteiro: mostra só a cabeça e os ombros
+      conteudo = Image.asset(corpo, fit: BoxFit.fitWidth, alignment: Alignment.topCenter);
+    } else {
+      conteudo = Center(
+        child: Text(
+          iniciais,
+          style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900),
+        ),
+      );
+    }
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+      child: Container(
+        key: ValueKey('${p.name}-${_humorLumi.name}-${_expressoes[p]?.name}'),
+        width: 72,
+        height: 72,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [cor.withAlpha(110), cor],
+          ),
+          border: Border.all(color: cor, width: 3),
+          boxShadow: [BoxShadow(color: cor.withAlpha(90), blurRadius: 10)],
+        ),
+        child: ClipOval(child: conteudo),
+      ),
+    );
+  }
+
   Widget _balao() {
     final fala = _fala;
     final narrador = fala.quem == Personagem.narrador;
     final texto = _textoAtual.substring(0, _letras.clamp(0, _textoAtual.length));
     final cor = _cor(fala.quem);
 
+    final textos = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (!narrador)
+          Container(
+            margin: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+            decoration: BoxDecoration(color: cor, borderRadius: BorderRadius.circular(100)),
+            child: Text(
+              _nome(fala.quem),
+              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+        Text(
+          texto,
+          style: TextStyle(
+            fontSize: 15.5,
+            height: 1.5,
+            fontStyle: narrador ? FontStyle.italic : FontStyle.normal,
+            color: narrador ? Colors.white : const Color(0xFF37474F),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      padding: const EdgeInsets.fromLTRB(14, 14, 16, 16),
       decoration: BoxDecoration(
         color: narrador ? Colors.black.withAlpha(170) : Colors.white,
         borderRadius: BorderRadius.circular(18),
@@ -305,32 +445,16 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
           BoxShadow(color: Colors.black.withAlpha(60), blurRadius: 14, offset: const Offset(0, 4)),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (!narrador)
-            Container(
-              margin: const EdgeInsets.only(bottom: 6),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              decoration: BoxDecoration(color: cor, borderRadius: BorderRadius.circular(100)),
-              child: Text(
-                _nome(fala.quem),
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-              ),
+      child: narrador
+          ? textos
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _retratoDe(fala),
+                const SizedBox(width: 14),
+                Expanded(child: textos),
+              ],
             ),
-          Text(
-            texto,
-            style: TextStyle(
-              fontSize: 15.5,
-              height: 1.5,
-              fontStyle: narrador ? FontStyle.italic : FontStyle.normal,
-              color: narrador ? Colors.white : const Color(0xFF37474F),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -349,14 +473,10 @@ class _CenaDialogoState extends State<CenaDialogo> with SingleTickerProviderStat
               colors: amb.fundo,
             ),
           ),
-          child: amb.icone == null || (widget.destaque != null && _indice >= widget.destaqueAPartirDaFala)
-              ? null
-              : Align(
-                  alignment: const Alignment(0, -0.55),
-                  child: Icon(amb.icone, size: 110, color: amb.corIcone.withAlpha(120)),
-                ),
         ),
-        if (amb.imagem != null)
+        if (amb.ilustracao != null && Recursos.existe(amb.ilustracao!))
+          SvgPicture.asset(amb.ilustracao!, fit: BoxFit.cover),
+        if (amb.imagem != null && Recursos.existe(amb.imagem!))
           Image.asset(
             amb.imagem!,
             fit: BoxFit.cover,

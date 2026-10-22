@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/game_state.dart';
 import '../story/historia.dart';
+import '../story/recursos.dart';
 import '../story/roteiro.dart';
 import '../widgets/cena_dialogo.dart';
 import '../widgets/destaques.dart';
@@ -79,8 +80,25 @@ class _PassagemScreenState extends State<PassagemScreen> {
 
   void _ir(String destino) => irParaPassagem(context, destino);
 
+  /// Ilustração da memória pelo nome da passagem:
+  /// "Memoria 1" → assets/images/memorias/memoria_1.png (ou .jpg)
+  /// "Memoria 4 Estufa" → memoria_4_estufa.png
+  static String? _imagemDaMemoria(String nomePassagem) {
+    final base = nomePassagem
+        .trim()
+        .toLowerCase()
+        .replaceAll('ó', 'o')
+        .replaceAll(RegExp(r'\s+'), '_');
+    for (final ext in ['png', 'jpg']) {
+      final caminho = 'assets/images/memorias/$base.$ext';
+      if (Recursos.existe(caminho) && Recursos.carregadoComSucesso) return caminho;
+    }
+    return null;
+  }
+
   static AmbienteCena _ambiente(Passagem p) {
     if (p.tem('entardecer')) return AmbienteCena.entardecer;
+    if (p.tem('cozinha')) return AmbienteCena.cozinha;
     if (p.tem('tempestade')) return AmbienteCena.tempestade;
     if (p.tem('escritorio')) return AmbienteCena.escritorio;
     if (p.tem('sala') || p.tem('telefone')) return AmbienteCena.telefone;
@@ -142,7 +160,7 @@ class _PassagemScreenState extends State<PassagemScreen> {
   Widget _cena(Passagem p) {
     final itens = p.itensValidos;
     final falas = <Fala>[];
-    List<Personagem>? elenco;
+    final trocasDeElenco = <int, List<Personagem>?>{};
     Widget? destaque;
     int destaqueAPartir = 0;
 
@@ -152,7 +170,13 @@ class _PassagemScreenState extends State<PassagemScreen> {
           falas.add(item.fala!);
           break;
         case TipoItem.elenco:
-          elenco = item.partes
+          // "Elenco:" vale a partir da próxima fala (pode trocar no meio da cena).
+          // "Elenco: quem fala" mostra só a personagem da fala atual.
+          if (item.partes.join(',').trim().toLowerCase() == 'quem fala') {
+            trocasDeElenco[falas.length] = null;
+            break;
+          }
+          trocasDeElenco[falas.length] = item.partes
               .map(Roteiro.personagemPorNome)
               .whereType<Personagem>()
               .where((q) => q != Personagem.narrador)
@@ -174,6 +198,7 @@ class _PassagemScreenState extends State<PassagemScreen> {
               ano: parte(2),
               icone: parte(3),
               rotulo: p.tem('memoria') && p.numero != null ? 'MEMÓRIA ${p.numero} DE 5 RECUPERADA' : null,
+              imagem: _imagemDaMemoria(p.nome),
             );
           }
           break;
@@ -191,7 +216,7 @@ class _PassagemScreenState extends State<PassagemScreen> {
       key: ValueKey(p.nome),
       falas: falas,
       ambiente: _ambiente(p),
-      elenco: elenco,
+      trocasDeElenco: trocasDeElenco,
       destaque: destaque,
       destaqueAPartirDaFala: destaqueAPartir,
       opcoes: opcoes,

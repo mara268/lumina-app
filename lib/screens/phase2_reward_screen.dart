@@ -12,10 +12,14 @@ class Phase2RewardScreen extends StatelessWidget {
       numeroFase: 2,
       conceito: 'Comandos e atuadores',
       comoResolveu:
-          'Você montou um comando com as duas partes que ele precisa: para QUEM (o ventilador, endereço 2) e O QUÊ (ligar).',
+          'A casa estava abafada e era preciso ligar o ventilador. Para isso, você montou um comando em duas escolhas:\n'
+          '1. Para QUEM: o Ventilador, que mora no endereço 2.\n'
+          '2. O QUÊ: a ação LIGAR.\n'
+          'O app juntou as duas partes em uma mensagem só e enviou para o endereço 2. O ventilador recebeu e começou a girar.',
       codigo: 'ENVIAR → end. 2 | LIGAR\n'
           '         ↑          ↑\n'
-          '     para quem    o quê',
+          '     para quem    o quê\n'
+          '   (ventilador)  (ação)',
       porQueFunciona:
           'Cada aparelho da casa tem um endereço, como uma casa em uma rua. Quando o comando chega no endereço certo com a ação certa, o atuador (o motor do ventilador) obedece. É assim que a maquete conversa com o app pelo protocolo Modbus.',
       noDiaADia:

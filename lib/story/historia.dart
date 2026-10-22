@@ -7,7 +7,8 @@ import '../widgets/lumi_avatar.dart';
 enum Personagem { lumi, jogadora, helena, valdir, narrador }
 
 /// Expressão de rosto da jogadora e da vó Helena (escolhe a imagem).
-enum Expressao { neutra, surpresa, feliz }
+/// trofeu: só a Helena, segurando o troféu no epílogo (helena_trofeu.png).
+enum Expressao { neutra, surpresa, feliz, trofeu }
 
 /// Uma fala da história. Use {nome} no texto para o nome da jogadora.
 class Fala {
@@ -34,12 +35,16 @@ class CardMulher {
   final String frase;
   final Color cor;
 
+  /// Retrato da mulher (opcional). Se o arquivo não existir, o card mostra as iniciais.
+  final String? imagem;
+
   const CardMulher({
     required this.nome,
     required this.periodo,
     required this.descricao,
     required this.frase,
     required this.cor,
+    this.imagem,
   });
 
   String get iniciais {
@@ -68,6 +73,7 @@ class Historia {
           'Matemática inglesa. Em 1843, escreveu o que é considerado o primeiro algoritmo publicado: uma sequência de passos para a Máquina Analítica de Charles Babbage, que nem chegou a ser construída.',
       frase: 'Ela programou uma máquina que ainda não existia.',
       cor: Color(0xFF7E57C2),
+      imagem: 'assets/images/cards/card_1.jpg',
     ),
     2: CardMulher(
       nome: 'Grace Hopper',
@@ -76,14 +82,16 @@ class Historia {
           'Cientista da computação e almirante da Marinha dos EUA. Criou um dos primeiros compiladores, em 1952, e suas ideias deram origem à linguagem COBOL. Defendia que computadores deviam entender comandos em palavras.',
       frase: 'Ela ensinou as máquinas a entender o que a gente pede.',
       cor: Color(0xFF1E88E5),
+      imagem: 'assets/images/cards/card_2.jpg',
     ),
     3: CardMulher(
-      nome: 'Cláudia Werner',
-      periodo: 'Brasil',
+      nome: 'Dorothy Vaughan',
+      periodo: '1910–2008',
       descricao:
-          'Pesquisadora brasileira e professora da COPPE/UFRJ, referência em engenharia de software no país, com pesquisas sobre reutilização de software. Formou gerações de pesquisadoras e pesquisadores.',
-      frase: 'Engenharia de software também se escreve em português.',
+          'Matemática da NASA. Foi a primeira mulher negra a chefiar uma equipe no centro de pesquisa onde trabalhava. Quando chegaram os computadores eletrônicos, aprendeu sozinha a linguagem FORTRAN e ensinou a sua equipe, para que ninguém ficasse para trás.',
+      frase: 'Quando a máquina chegou, ela aprendeu primeiro e ensinou todo mundo.',
       cor: Color(0xFF43A047),
+      imagem: 'assets/images/cards/card_3.jpg',
     ),
     4: CardMulher(
       nome: 'Margaret Hamilton',
@@ -92,17 +100,19 @@ class Historia {
           'Liderou a equipe de software do programa Apollo, no MIT. Em 1969, minutos antes do pouso da Apollo 11 na Lua, o computador ficou sobrecarregado; o software dela priorizou as tarefas mais importantes, e o pouso continuou.',
       frase: 'Quando tudo aconteceu ao mesmo tempo, o código dela soube o que importava.',
       cor: Color(0xFFF4511E),
+      imagem: 'assets/images/cards/card_4.jpg',
     ),
   };
 
   /// O 5º card é o da própria jogadora.
   static CardMulher cardDaJogadora(GameState estado) => CardMulher(
         nome: estado.nomeOuPadrao,
-        periodo: 'hoje',
+        periodo: '${DateTime.now().year}–',
         descricao:
-            'Restaurou sozinha uma casa inteligente numa noite de tempestade: sequências, comandos, decisões e eventos.',
-        frase: 'A próxima da lista.',
+            'Numa noite de tempestade, acordou a casa da avó com a ajuda da Lumi. Colocou os passos em ordem, enviou comandos, ensinou a casa a decidir sozinha, a reagir à chuva e a seguir uma rotina.',
+        frase: 'Toda inventora começa com uma primeira noite. Esta foi a sua.',
         cor: const Color(0xFFE65100),
+        imagem: 'assets/images/personagens/retrato_neta_${estado.avatar}_feliz.png',
       );
 
   // ---------------- ATALHO (fase 3) ----------------

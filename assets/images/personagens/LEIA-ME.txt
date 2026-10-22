@@ -8,3 +8,9 @@ helena_neutra.png   helena_surpresa.png   helena_feliz.png
 valdir.png
 
 Se faltar a versão "surpresa" ou "feliz", o app usa a "neutra".
+
+Retratos (opcional) — aparecem no balão de fala:
+retrato_neta_a.png  retrato_neta_b.png  retrato_neta_c.png
+retrato_helena.png  retrato_valdir.png
+(quadrados, só rosto e ombros). Se não existirem, o app recorta a parte de
+cima da imagem de corpo inteiro; se nem ela existir, mostra as iniciais.

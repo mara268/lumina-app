@@ -1,8 +1,12 @@
-Cenários do Lúmina (JPG, formato retrato 3:4 ou 9:16).
-Enquanto um arquivo não existir, o app mostra um fundo colorido com ícone.
+Cenários do Lúmina.
 
-entardecer.jpg   fachada da casa no cerrado, fim de tarde
-tempestade.jpg   sala/corredor no escuro, noite de tempestade
-escritorio.jpg   escritório da vó Helena com a central da casa
-sala.jpg         sala com telefone fixo antigo
-amanhecer.jpg    fachada da casa ao amanhecer, tudo aceso
+Já existem ilustrações vetoriais (.svg) para todas as cenas. Quando você gerar
+a arte final no Gemini, salve como .jpg com o MESMO nome: o app passa a usar
+o .jpg automaticamente no lugar do .svg.
+
+entardecer   fachada da casa no cerrado, fim de tarde
+cozinha      cozinha da casa, fim de tarde, bilhete na geladeira
+tempestade   corredor no escuro, noite de tempestade
+escritorio   escritório da vó Helena com a central da casa
+sala         sala com telefone fixo antigo
+amanhecer    fachada da casa ao amanhecer, tudo aceso

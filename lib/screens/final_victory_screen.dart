@@ -182,11 +182,6 @@ class _FinalVictoryScreenState extends State<FinalVictoryScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Lúmina: Conexões Invisíveis · PIBIC/UDF',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white38, fontSize: 12),
-              ),
             ],
           ),
         ),

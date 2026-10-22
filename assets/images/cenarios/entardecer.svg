@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E3A6B"/>
+      <stop offset="0.45" stop-color="#B8566B"/>
+      <stop offset="0.7" stop-color="#F08A5D"/>
+      <stop offset="0.82" stop-color="#FFC46B"/>
+    </linearGradient>
+    <radialGradient id="sol" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF4C2"/>
+      <stop offset="1" stop-color="#FFB35C"/>
+    </radialGradient>
+    <radialGradient id="brilhoSol" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFE7A3" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#FFE7A3" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chao" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5A3A2E"/>
+      <stop offset="1" stop-color="#2B1C18"/>
+    </linearGradient>
+    <radialGradient id="janela" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFE9A8" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#FFC46B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#ceu)"/>
+  <!-- estrelas aparecendo -->
+  <g fill="#FFFFFF" opacity="0.7">
+    <circle cx="120" cy="90" r="2"/><circle cx="300" cy="150" r="1.5"/><circle cx="520" cy="70" r="2"/>
+    <circle cx="760" cy="130" r="1.5"/><circle cx="660" cy="220" r="1.2"/><circle cx="420" cy="230" r="1.2"/>
+  </g>
+  <!-- sol se pondo -->
+  <circle cx="650" cy="790" r="240" fill="url(#brilhoSol)"/>
+  <circle cx="650" cy="790" r="85" fill="url(#sol)"/>
+  <!-- nuvens de tempestade no horizonte -->
+  <g fill="#4A3B66" opacity="0.92">
+    <ellipse cx="160" cy="330" rx="170" ry="55"/><circle cx="110" cy="300" r="60"/><circle cx="200" cy="280" r="75"/><circle cx="290" cy="320" r="55"/>
+    <ellipse cx="740" cy="400" rx="190" ry="45"/><circle cx="700" cy="370" r="55"/><circle cx="790" cy="355" r="65"/>
+  </g>
+  <g fill="#6B5288" opacity="0.6">
+    <ellipse cx="200" cy="300" rx="120" ry="25"/><ellipse cx="770" cy="375" rx="120" ry="20"/>
+  </g>
+  <!-- morros do cerrado -->
+  <path d="M0 860 Q 150 790 320 830 T 640 820 T 900 800 L900 1200 L0 1200 Z" fill="#7A4A5E"/>
+  <path d="M0 900 Q 200 850 420 890 T 900 870 L900 1200 L0 1200 Z" fill="#5B3A4E"/>
+  <rect y="930" width="900" height="270" fill="url(#chao)"/>
+  <!-- árvore retorcida do cerrado (esquerda) -->
+  <g>
+    <path d="M95 940 C 90 880, 120 850, 100 800 C 85 765, 130 745, 140 720" stroke="#2E1E1A" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M105 840 C 70 820, 50 800, 40 770" stroke="#2E1E1A" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <g fill="#3F5A2E"><circle cx="140" cy="705" r="48"/><circle cx="95" cy="725" r="38"/><circle cx="40" cy="760" r="32"/><circle cx="180" cy="730" r="34"/></g>
+    <g fill="#55753C" opacity="0.8"><circle cx="130" cy="692" r="26"/><circle cx="50" cy="750" r="16"/></g>
+  </g>
+  <!-- árvore (direita) -->
+  <g>
+    <path d="M810 950 C 815 890, 790 860, 805 820" stroke="#2E1E1A" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <g fill="#3F5A2E"><circle cx="805" cy="800" r="44"/><circle cx="760" cy="815" r="30"/><circle cx="850" cy="820" r="32"/></g>
+  </g>
+  <!-- casa -->
+  <g>
+    <rect x="235" y="760" width="430" height="190" fill="#E7C29A"/>
+    <rect x="235" y="760" width="430" height="190" fill="#8E3B2F" opacity="0.12"/>
+    <path d="M205 770 L 450 640 L 695 770 Z" fill="#8E3B2F"/>
+    <path d="M205 770 L 450 640 L 695 770 L 680 778 L 450 656 L 220 778 Z" fill="#6E2C23"/>
+    <rect x="560" y="660" width="38" height="70" fill="#6E2C23"/>
+    <rect x="410" y="830" width="70" height="120" rx="6" fill="#5D3A2A"/>
+    <circle cx="468" cy="892" r="4" fill="#FFC46B"/>
+    <circle cx="320" cy="840" r="70" fill="url(#janela)"/>
+    <circle cx="590" cy="840" r="70" fill="url(#janela)"/>
+    <rect x="285" y="805" width="70" height="70" rx="4" fill="#FFD27A"/>
+    <rect x="555" y="805" width="70" height="70" rx="4" fill="#FFD27A"/>
+    <path d="M320 805 V875 M285 840 H355 M590 805 V875 M555 840 H625" stroke="#8E5A3A" stroke-width="5"/>
+    <rect x="225" y="945" width="450" height="10" fill="#9C7A5C"/>
+  </g>
+  <!-- capim -->
+  <g stroke="#7A8A3A" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.8">
+    <path d="M60 1000 l-8 -30 M66 1000 l2 -34 M72 1000 l10 -28"/>
+    <path d="M700 1020 l-8 -28 M706 1020 l2 -34 M712 1020 l10 -26"/>
+    <path d="M380 1060 l-6 -24 M386 1060 l2 -30 M392 1060 l8 -22"/>
+  </g>
+</svg>

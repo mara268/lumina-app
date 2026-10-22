@@ -40,8 +40,15 @@ class GameState extends ChangeNotifier {
   /// Nome para usar nas falas (com um padrão, caso fique vazio).
   String get nomeOuPadrao => nome.trim().isEmpty ? 'Guardiã' : nome.trim();
 
+  /// Guarda o nome com a primeira letra de cada palavra em maiúscula
+  /// ("ana clara" vira "Ana Clara"); o resto fica como a jogadora digitou.
   void definirNome(String valor) {
-    nome = valor.trim();
+    nome = valor
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .map((p) => p[0].toUpperCase() + p.substring(1))
+        .join(' ');
     notifyListeners();
   }
 

@@ -19,7 +19,7 @@ class GameState extends ChangeNotifier {
   static const int energiaInicial = 60;
 
   String nome = '';
-  String avatar = 'a'; // 'a', 'b' ou 'c' (aparência escolhida pela jogadora)
+  String avatar = 'a'; // 'a' a 'f' (aparência escolhida pela jogadora)
   int energia = energiaInicial;
 
   // Escolhas que mudam a história

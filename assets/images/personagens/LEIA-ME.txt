@@ -4,6 +4,9 @@ Enquanto um arquivo não existir, o app mostra uma silhueta no lugar.
 neta_a_neutra.png   neta_a_surpresa.png   neta_a_feliz.png
 neta_b_neutra.png   neta_b_surpresa.png   neta_b_feliz.png
 neta_c_neutra.png   neta_c_surpresa.png   neta_c_feliz.png
+neta_d_neutra.png   neta_d_surpresa.png   neta_d_feliz.png   (diversidade de corpos)
+neta_e_neutra.png   neta_e_surpresa.png   neta_e_feliz.png   (menina PcD; a imagem tem espaço vazio em cima para ela ficar na altura certa sentada)
+neta_f_neutra.png   neta_f_surpresa.png   neta_f_feliz.png   (menina indígena)
 helena_neutra.png   helena_surpresa.png   helena_feliz.png
 valdir.png
 

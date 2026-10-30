@@ -100,7 +100,14 @@ class _InicioScreenState extends State<InicioScreen> {
 
   Widget _opcaoAvatar(String id, int numero) {
     final selecionado = _avatar == id;
-    const coresReserva = [Color(0xFF8D6E63), Color(0xFFFFB74D), Color(0xFF5D4037)];
+    const coresReserva = [
+      Color(0xFF8D6E63),
+      Color(0xFFFFB74D),
+      Color(0xFF5D4037),
+      Color(0xFF8E24AA),
+      Color(0xFF00897B),
+      Color(0xFFC62828),
+    ];
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _avatar = id),
@@ -119,13 +126,13 @@ class _InicioScreenState extends State<InicioScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: 170,
+                height: 150,
                 child: Image.asset(
                   'assets/images/personagens/neta_${id}_neutra.png',
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stack) => Icon(
                     Icons.person,
-                    size: 150,
+                    size: 130,
                     color: coresReserva[numero - 1],
                   ),
                 ),
@@ -159,11 +166,20 @@ class _InicioScreenState extends State<InicioScreen> {
           style: TextStyle(fontSize: 16, color: Colors.white),
         ),
         const SizedBox(height: 20),
+        // 6 avatares em duas linhas de 3
         Row(
           children: [
             _opcaoAvatar('a', 1),
-            _opcaoAvatar('b', 2),
-            _opcaoAvatar('c', 3),
+            _opcaoAvatar('e', 2),
+            _opcaoAvatar('b', 3),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            _opcaoAvatar('d', 4),
+            _opcaoAvatar('c', 5),
+            _opcaoAvatar('f', 6),
           ],
         ),
         const SizedBox(height: 24),

@@ -118,9 +118,9 @@ class Historia {
   // ---------------- ATALHO (fase 3) ----------------
 
   static const String propostaAtalho =
-      'Ou... a gente pode só deixar a luz da varanda ligada direto. Dá menos trabalho, né?';
+      'Ou... a gente pode só deixar a cortina do quarto fechada direto. Dá menos trabalho, né?';
   static const String reacaoAceitouAtalho =
-      'Hmm... de dia, com sol forte, a luz continuaria gastando energia. Acho que eu dei uma péssima ideia. Vamos fazer a casa decidir?';
+      'Hmm... de dia, com a cortina fechada, a casa fica escura e a gente acende a luz à toa, gastando energia. Acho que eu dei uma péssima ideia. Vamos fazer a casa decidir?';
   static const String reacaoRecusouAtalho =
       'Era um teste! Sua avó dizia: "gambiarra hoje, conta de luz amanhã."';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
+import '../services/casa_service.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -14,9 +15,9 @@ class Phase1Screen extends StatefulWidget {
 
 class _Phase1ScreenState extends State<Phase1Screen> {
   final List<String> _correctOrder = [
-    'Ler Sensor de Presença',
+    'Ler Sensor de Presença no Portão',
     'Processar Decisão na Placa',
-    'Ligar Lâmpada do Corredor',
+    'Abrir Portão da Garagem',
   ];
 
   late List<String> _userOrder;
@@ -25,17 +26,17 @@ class _Phase1ScreenState extends State<Phase1Screen> {
 
   // Regra de dicas do roteiro: 1º erro = pergunta, 2º = pista, 3º+ = primeiro passo.
   static const List<String> _dicas = [
-    'A luz tentou acender antes de saber se tinha alguém ali. Quem vem primeiro: perceber ou agir?',
-    'Pista: a casa primeiro percebe (sensor), depois pensa (placa) e só então age (lâmpada).',
-    'O primeiro passo é "Ler Sensor de Presença". Agora monte o resto!',
+    'O portão tentou abrir antes de saber se tinha alguém ali. Quem vem primeiro: perceber ou agir?',
+    'Pista: a casa primeiro percebe (sensor), depois pensa (placa) e só então age (portão).',
+    'O primeiro passo é "Ler Sensor de Presença no Portão". Agora monte o resto!',
   ];
 
   @override
   void initState() {
     super.initState();
     _userOrder = [
-      'Ligar Lâmpada do Corredor',
-      'Ler Sensor de Presença',
+      'Abrir Portão da Garagem',
+      'Ler Sensor de Presença no Portão',
       'Processar Decisão na Placa',
     ];
   }
@@ -51,10 +52,12 @@ class _Phase1ScreenState extends State<Phase1Screen> {
 
     if (isCorrect) {
       setState(() => _hasError = false);
+      // na maquete: o portão da garagem abre
+      CasaService.instance.enviar([AcaoCasa.abrirPortao]);
       await mostrarReacaoLumi(
         context,
         mood: LumiMood.celebrando,
-        titulo: 'Olha só! A luz acendeu!',
+        titulo: 'Olha só! O portão abriu!',
         mensagem:
             'Entrada, processamento, saída. Você acabou de escrever seu primeiro algoritmo.',
       );
@@ -103,7 +106,7 @@ class _Phase1ScreenState extends State<Phase1Screen> {
                 mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
                 text: _hasError
                     ? _dicas[(_tentativasErradas - 1).clamp(0, _dicas.length - 1)]
-                    : 'O raio embaralhou os passos da rotina do corredor! Arraste as instruções para a ordem certa: a casa precisa perceber, pensar e só então agir.',
+                    : 'O raio embaralhou os passos da rotina do portão da garagem! Arraste as instruções para a ordem certa: quando alguém chega, a casa precisa perceber, pensar e só então agir.',
               ),
               const SizedBox(height: 20),
 

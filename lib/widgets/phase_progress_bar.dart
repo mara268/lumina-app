@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/game_state.dart';
+import 'conexao_maquete.dart';
 
 /// Progresso da missão + energia do gerador (que muda com acertos, erros
 /// e escolhas). A energia se atualiza sozinha quando o GameState muda.
@@ -105,6 +106,8 @@ class PhaseProgressBar extends StatelessWidget {
               },
             ),
           ],
+          // aparece só quando a maquete está conectada
+          const StatusMaquete(),
         ],
       ),
     );

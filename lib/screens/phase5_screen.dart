@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
+import '../services/casa_service.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -28,12 +29,12 @@ class Phase5Screen extends StatefulWidget {
 class _Phase5ScreenState extends State<Phase5Screen> {
   // 4 blocos certos (um de cada fase) + 2 "pegadinhas"
   static const List<_Bloco> _biblioteca = [
-    _Bloco('ventilador', 'Comando', 'ENVIAR → ventilador | LIGAR', 'Ventilação', Icons.air),
-    _Bloco('chuva_abrir', 'Evento', 'QUANDO chuva FAÇA abrir janelas', '', Icons.water_drop),
-    _Bloco('varanda', 'Condição', 'SE luz < 40 ENTÃO ligar varanda SENÃO desligar', 'Varanda', Icons.lightbulb),
-    _Bloco('corredor', 'Sequência', 'QUANDO presença no corredor FAÇA acender corredor', 'Corredor', Icons.directions_walk),
-    _Bloco('luz_sempre', 'Atalho', 'Deixar todas as luzes sempre ligadas', '', Icons.flash_on),
-    _Bloco('chuva_fechar', 'Evento', 'QUANDO chuva FAÇA fechar janelas', 'Janelas', Icons.window),
+    _Bloco('portao', 'Sequência', 'sensor → placa → fechar portão da garagem', 'Portão', Icons.garage),
+    _Bloco('chuva_abrir', 'Evento', 'QUANDO chuva FAÇA abrir janela', '', Icons.water_drop),
+    _Bloco('cortina', 'Condição', 'SE luz < 40 ENTÃO fechar cortina SENÃO abrir', 'Cortina', Icons.curtains_closed),
+    _Bloco('janela', 'Comando', 'ENVIAR → /janela | FECHAR', 'Janela', Icons.window),
+    _Bloco('cortina_sempre', 'Atalho', 'Deixar a cortina sempre fechada', '', Icons.block),
+    _Bloco('chuva_fechar', 'Evento', 'QUANDO chuva FAÇA fechar janela', 'Chuva', Icons.umbrella),
   ];
 
   final List<_Bloco> _rotina = [];
@@ -77,6 +78,12 @@ class _Phase5ScreenState extends State<Phase5Screen> {
         _concluida = true;
         _hasError = false;
       });
+      // na maquete: a rotina da noite fecha portão e janela e liga a cortina automática
+      CasaService.instance.enviar([
+        AcaoCasa.fecharPortao,
+        AcaoCasa.fecharJanela,
+        AcaoCasa.ativarAutomatico,
+      ]);
       await mostrarReacaoLumi(
         context,
         mood: LumiMood.celebrando,
@@ -96,10 +103,10 @@ class _Phase5ScreenState extends State<Phase5Screen> {
     if (pegadinha.isNotEmpty) {
       final b = pegadinha.first;
       erro = b.id == 'chuva_abrir'
-          ? 'Opa! Um bloco manda ABRIR as janelas quando chove. A casa ia virar piscina! Tire esse bloco da rotina.'
-          : 'O atalho "luzes sempre ligadas" voltou! Isso gasta a energia do gerador. Tire esse bloco da rotina.';
+          ? 'Opa! Um bloco manda ABRIR a janela quando chove. A casa ia virar piscina! Tire esse bloco da rotina.'
+          : 'O atalho "cortina sempre fechada" voltou! De dia, a casa ficaria escura e gastaria luz à toa. Tire esse bloco da rotina.';
     } else {
-      erro = 'Tudo funcionou... menos ${faltando.first.sistema.toLowerCase()}. Qual bloco cuida dessa parte da casa?';
+      erro = 'Tudo funcionou... menos ${_nomeSistema(faltando.first.sistema)}. Qual bloco cuida dessa parte da casa?';
     }
 
     setState(() {
@@ -114,6 +121,22 @@ class _Phase5ScreenState extends State<Phase5Screen> {
       mensagem: erro,
       textoBotao: 'AJUSTAR A ROTINA',
     );
+  }
+
+  /// Nome do sistema dentro de uma frase ("menos o portão", "menos a proteção contra chuva").
+  static String _nomeSistema(String sistema) {
+    switch (sistema) {
+      case 'Portão':
+        return 'o portão';
+      case 'Janela':
+        return 'a janela';
+      case 'Cortina':
+        return 'a cortina';
+      case 'Chuva':
+        return 'a proteção contra chuva';
+      default:
+        return sistema.toLowerCase();
+    }
   }
 
   Widget _cartaoBloco(_Bloco bloco) {
@@ -185,7 +208,7 @@ class _Phase5ScreenState extends State<Phase5Screen> {
                 mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
                 text: _hasError
                     ? _dicaAtual
-                    : 'Falta uma coisa: a casa não é só uma luz ou uma janela, é tudo funcionando junto. Monte a Rotina da Noite com os blocos que você criou!',
+                    : 'Falta uma coisa: a casa não é só um portão ou uma janela, é tudo funcionando junto. Monte a Rotina da Noite com os blocos que você criou!',
               ),
               const SizedBox(height: 16),
 
@@ -198,10 +221,10 @@ class _Phase5ScreenState extends State<Phase5Screen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _status('Corredor', Icons.light),
-                      _status('Ventilação', Icons.air),
-                      _status('Varanda', Icons.lightbulb),
-                      _status('Janelas', Icons.window),
+                      _status('Portão', Icons.garage),
+                      _status('Janela', Icons.window),
+                      _status('Cortina', Icons.curtains_closed),
+                      _status('Chuva', Icons.umbrella),
                     ],
                   ),
                 ),

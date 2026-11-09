@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
+import '../services/casa_service.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -13,30 +14,35 @@ class Phase2Screen extends StatefulWidget {
 }
 
 class _Phase2ScreenState extends State<Phase2Screen> {
-  // Dispositivos da casa e seus endereços
-  static const List<String> _dispositivos = ['Luz da sala', 'Ventilador', 'Janela'];
-  static const List<String> _acoes = ['LIGAR', 'DESLIGAR'];
+  // Dispositivos da casa (os mesmos da maquete) e seus endereços
+  static const List<String> _dispositivos = ['Portão', 'Janela', 'Cortina'];
+  static const Map<String, String> _enderecos = {
+    'Portão': '/porta',
+    'Janela': '/janela',
+    'Cortina': '/cortina',
+  };
+  static const List<String> _acoes = ['ABRIR', 'FECHAR'];
 
   String? _dispositivo;
   String? _acao;
-  bool _ventiladorLigado = false;
+  bool _janelaAberta = false;
   bool _hasError = false;
   String _dicaAtual = '';
   int _tentativasErradas = 0;
 
   // Dicas progressivas (1º erro = pergunta, 2º = pista, 3º+ = resposta guiada)
   static const List<String> _dicasDispositivo = [
-    'A luz da sala acendeu... mas a gente queria vento, não luz. Para quem foi o comando?',
-    'Pista: o aparelho que faz vento é o de endereço 2.',
-    'Escolha o Ventilador (end. 2) como destino do comando.',
+    'Algo se mexeu... mas o ar continua parado e abafado. Para quem foi o comando?',
+    'Pista: o que deixa o vento entrar no cômodo é a janela, no endereço /janela.',
+    'Escolha a Janela (/janela) como destino do comando.',
   ];
   static const List<String> _dicasAcao = [
-    'O ventilador recebeu o recado, mas o recado foi "fica quieto". Que ação faz ele girar?',
-    'Pista: para começar a funcionar, o comando é o contrário de desligar.',
-    'Escolha a ação LIGAR.',
+    'A janela recebeu o recado, mas o recado foi "fica fechada". Que ação deixa o vento entrar?',
+    'Pista: para o ar circular, a janela precisa fazer o contrário de fechar.',
+    'Escolha a ação ABRIR.',
   ];
 
-  int _endereco(String dispositivo) => _dispositivos.indexOf(dispositivo) + 1;
+  String _endereco(String dispositivo) => _enderecos[dispositivo]!;
 
   Future<void> _enviarComando() async {
     if (_dispositivo == null || _acao == null) {
@@ -47,19 +53,21 @@ class _Phase2ScreenState extends State<Phase2Screen> {
       return;
     }
 
-    final dispositivoCerto = _dispositivo == 'Ventilador';
-    final acaoCerta = _acao == 'LIGAR';
+    final dispositivoCerto = _dispositivo == 'Janela';
+    final acaoCerta = _acao == 'ABRIR';
 
     if (dispositivoCerto && acaoCerta) {
       setState(() {
-        _ventiladorLigado = true;
+        _janelaAberta = true;
         _hasError = false;
       });
+      // na maquete: a janela abre
+      CasaService.instance.enviar([AcaoCasa.abrirJanela]);
       await mostrarReacaoLumi(
         context,
         mood: LumiMood.celebrando,
         titulo: 'Sentiu o vento?',
-        mensagem: 'Foi você que mandou! Um comando diz para QUEM e O QUÊ fazer, e o ventilador obedeceu.',
+        mensagem: 'Foi você que mandou! Um comando diz para QUEM e O QUÊ fazer, e a janela obedeceu.',
       );
       if (!mounted) return;
       Navigator.push(
@@ -107,7 +115,7 @@ class _Phase2ScreenState extends State<Phase2Screen> {
                 label: Text(rotulo != null ? rotulo(opcao) : opcao),
                 selected: selecionado == opcao,
                 selectedColor: const Color(0xFFFFCCBC),
-                onSelected: _ventiladorLigado ? null : (_) => onSelect(opcao),
+                onSelected: _janelaAberta ? null : (_) => onSelect(opcao),
               ),
           ],
         ),
@@ -119,7 +127,7 @@ class _Phase2ScreenState extends State<Phase2Screen> {
   Widget build(BuildContext context) {
     final comandoTexto = (_dispositivo == null || _acao == null)
         ? 'ENVIAR → ? | ?'
-        : 'ENVIAR → end. ${_endereco(_dispositivo!)} | $_acao';
+        : 'ENVIAR → ${_endereco(_dispositivo!)} | $_acao';
 
     return Scaffold(
       appBar: AppBar(
@@ -141,7 +149,7 @@ class _Phase2ScreenState extends State<Phase2Screen> {
                 mood: _hasError ? LumiMood.pensando : LumiMood.instruindo,
                 text: _hasError
                     ? _dicaAtual
-                    : 'Tá abafado aqui! Cada aparelho da casa tem um endereço, como uma casa numa rua. Monte o comando: para QUEM e O QUÊ.',
+                    : 'Tá abafado aqui! Cada parte da casa tem um endereço, como uma casa numa rua. Monte o comando: para QUEM e O QUÊ.',
               ),
               const SizedBox(height: 20),
 
@@ -154,18 +162,18 @@ class _Phase2ScreenState extends State<Phase2Screen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Icon(
-                        _ventiladorLigado ? Icons.air : Icons.mode_fan_off,
+                        _janelaAberta ? Icons.air : Icons.window,
                         size: 64,
-                        color: _ventiladorLigado ? Colors.blue : Colors.grey,
+                        color: _janelaAberta ? Colors.blue : Colors.grey,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _ventiladorLigado ? 'Ventilador: LIGADO' : 'Ventilador: DESLIGADO',
+                        _janelaAberta ? 'Janela: ABERTA (o vento entrou!)' : 'Janela: FECHADA',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: _ventiladorLigado ? Colors.blue : Colors.grey.shade700,
+                          color: _janelaAberta ? Colors.blue : Colors.grey.shade700,
                         ),
                       ),
                       const Divider(height: 28),
@@ -173,7 +181,7 @@ class _Phase2ScreenState extends State<Phase2Screen> {
                         titulo: '1. Para quem? (dispositivo)',
                         opcoes: _dispositivos,
                         selecionado: _dispositivo,
-                        rotulo: (d) => '$d (end. ${_endereco(d)})',
+                        rotulo: (d) => '$d (${_endereco(d)})',
                         onSelect: (d) => setState(() => _dispositivo = d),
                       ),
                       const SizedBox(height: 16),
@@ -206,7 +214,7 @@ class _Phase2ScreenState extends State<Phase2Screen> {
               const SizedBox(height: 24),
 
               ElevatedButton.icon(
-                onPressed: _ventiladorLigado ? null : _enviarComando,
+                onPressed: _janelaAberta ? null : _enviarComando,
                 icon: const Icon(Icons.send),
                 label: const Text(
                   'ENVIAR COMANDO',

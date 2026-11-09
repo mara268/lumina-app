@@ -66,7 +66,7 @@ Narrador: O escritório está do jeito que a vó deixou: placas e fios espalhado
 Lumi (alerta): Sis... sistema de emergência ativo. Energia: 60%. Quem... quem está aí?
 Jogadora (surpresa): Eu sou {nome}, neta da Helena. Quem é você?
 Lumi (pensando): Eu sou... a Lumi. Eu acho. Minha memória está em pedaços, o raio bagunçou tudo. Mas você... tem o jeito dela.
-Lumi: A casa inteira está dormindo. Luzes, ventilação, janelas: cada sistema perdeu as instruções. Eu sei como a casa funciona, mas não tenho mãos. Você tem.
+Lumi: A casa inteira está dormindo. Portão, janelas, cortinas: cada sistema perdeu as instruções. Eu sei como a casa funciona, mas não tenho mãos. Você tem.
 Jogadora (surpresa): Eu? Eu não entendo nada disso.
 Lumi: Ainda. Sua avó também não entendia, um dia. Vamos juntas?
 [[VAMOS JUNTAS->Fase 1]]
@@ -213,7 +213,7 @@ Narrador: O telefone toca. É o Seu Valdir: "Dona Helena? Já tô mandando o rap
 (else-if: $telefonema is "desligou")[Helena: Não precisa, Valdir. Ela não respondeu ontem. Respondeu consertando.]
 (else:)[Helena: Não precisa, Valdir. Ela aprendeu.]
 (if: $atalho is "sim")[Lumi: E eu aprendi a não sugerir gambiarra para engenheira.]
-(else:)[Lumi: E ela não caiu na minha pegadinha da luz acesa.]
+(else:)[Lumi: E ela não caiu na minha pegadinha da cortina fechada.]
 Lumi: Helena, posso registrar uma nova administradora do sistema?
 Helena (feliz): Pode. Guardiã da casa: {nome}.
 Jogadora (feliz): Guardiã... Eu gostei disso.

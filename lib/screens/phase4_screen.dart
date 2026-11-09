@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
+import '../services/casa_service.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
 import '../widgets/phase_progress_bar.dart';
@@ -22,7 +23,7 @@ class _Phase4ScreenState extends State<Phase4Screen> {
   static const List<String> _acoes = [
     'fechar a janela',
     'abrir a janela',
-    'ligar o ventilador',
+    'abrir a cortina',
   ];
 
   String? _janela;
@@ -54,6 +55,8 @@ class _Phase4ScreenState extends State<Phase4Screen> {
         _janelaFechada = true;
         _hasError = false;
       });
+      // na maquete: a janela fecha
+      CasaService.instance.enviar([AcaoCasa.fecharJanela]);
       final memoria = _janela == 'Escritório'
           ? 'O diário e os cadernos da vó Helena estão secos e salvos.'
           : 'As mudas de ipê e pequi da vó Helena estão protegidas.';
@@ -77,7 +80,7 @@ class _Phase4ScreenState extends State<Phase4Screen> {
     } else if (_acao == _acoes[1]) {
       erro = 'Abrir a janela na chuva?! O cômodo ia virar piscina!';
     } else {
-      erro = 'O ventilador ligou... mas a chuva continua entrando pela janela!';
+      erro = 'A cortina abriu... mas a chuva continua entrando pela janela!';
     }
     final dica = _tentativasErradas >= 1
         ? '$erro\n\nPista: QUANDO o sensor de chuva detectar água, FAÇA fechar a janela.'

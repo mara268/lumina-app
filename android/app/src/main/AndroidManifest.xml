@@ -1,8 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- acesso à maquete (ESP32) pelo Wi-Fi -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="lumina_app"
+        android:label="Lúmina"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

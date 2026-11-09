@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/game_state.dart';
+import '../services/casa_service.dart';
 import '../story/historia.dart';
 import '../widgets/lumi_dialog_card.dart';
 import '../widgets/lumi_reaction.dart';
@@ -15,7 +16,7 @@ class Phase3Screen extends StatefulWidget {
 
 class _Phase3ScreenState extends State<Phase3Screen> {
   static const List<int> _limites = [20, 40, 80];
-  static const List<String> _acoes = ['LIGAR', 'DESLIGAR'];
+  static const List<String> _acoes = ['FECHAR', 'ABRIR'];
 
   double _luminosidade = 80.0;
   int? _limite;
@@ -30,12 +31,12 @@ class _Phase3ScreenState extends State<Phase3Screen> {
   Future<void> _decidirAtalho(bool aceitou) async {
     GameState.instance.escolherAtalho(aceitou);
     if (aceitou) {
-      // a luz fica acesa até de dia: a energia do gerador cai 20
+      // a cortina fica fechada até de dia: a casa escura gasta luz e a energia cai 20
       setState(() => _luminosidade = 100);
       await mostrarReacaoLumi(
         context,
         mood: LumiMood.alerta,
-        titulo: 'Sol a pino e a luz acesa...',
+        titulo: 'Sol a pino e a cortina fechada...',
         mensagem: Historia.reacaoAceitouAtalho,
         textoBotao: 'FAZER A CASA DECIDIR',
         energia: -20,
@@ -68,7 +69,7 @@ class _Phase3ScreenState extends State<Phase3Screen> {
             side: const BorderSide(color: Color(0xFFE65100), width: 1.5),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
-          child: const Text('"Vamos deixar ligada direto."', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          child: const Text('"Vamos deixar fechada direto."', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
         ),
         const SizedBox(height: 12),
         OutlinedButton(
@@ -86,12 +87,12 @@ class _Phase3ScreenState extends State<Phase3Screen> {
 
   bool get _programaCompleto => _limite != null && _acaoEntao != null && _acaoSenao != null;
 
-  /// A lâmpada segue o programa montado pela jogadora (se estiver completo).
-  bool get _lampadaLigada {
+  /// A cortina segue o programa montado pela jogadora (se estiver completo).
+  bool get _cortinaFechada {
     if (!_programaCompleto) return false;
     final condicao = _luminosidade < _limite!;
     final acao = condicao ? _acaoEntao : _acaoSenao;
-    return acao == 'LIGAR';
+    return acao == 'FECHAR';
   }
 
   Future<void> _validarPrograma() async {
@@ -105,24 +106,26 @@ class _Phase3ScreenState extends State<Phase3Screen> {
 
     String? erro;
     if (_acaoEntao == _acaoSenao) {
-      erro = 'Do jeito que está, a luz faz a mesma coisa de dia e de noite. Aí a decisão não serve pra nada!';
-    } else if (_acaoEntao == 'DESLIGAR') {
-      erro = 'Agora a luz acende de dia e apaga de noite. A casa ficou do avesso!';
+      erro = 'Do jeito que está, a cortina faz a mesma coisa de dia e de noite. Aí a decisão não serve pra nada!';
+    } else if (_acaoEntao == 'ABRIR') {
+      erro = 'Agora a cortina fecha de dia e abre de noite. A casa ficou do avesso!';
     } else if (_limite! > 40) {
-      erro = 'Com $_limite, a luz acenderia até no meio da tarde e gastaria energia à toa. Escolha um limite que só aconteça quando escurece de verdade.';
+      erro = 'Com $_limite, a cortina fecharia no meio da tarde e a casa ficaria escura cedo demais. Escolha um limite que só aconteça quando escurece de verdade.';
     }
 
     if (erro == null) {
       setState(() {
         _faseConcluida = true;
         _hasError = false;
-        _luminosidade = 10; // mostra a noite chegando e a luz acendendo
+        _luminosidade = 10; // mostra a noite chegando e a cortina fechando
       });
+      // na maquete: a cortina fecha e o modo automático (sensor de luz) é ligado
+      CasaService.instance.enviar([AcaoCasa.fecharCortina, AcaoCasa.ativarAutomatico]);
       await mostrarReacaoLumi(
         context,
         mood: LumiMood.celebrando,
-        titulo: 'A varanda acendeu sozinha!',
-        mensagem: 'A casa agora pensa antes de agir: SE está escuro, ENTÃO liga; SENÃO, desliga. Isso é uma decisão!',
+        titulo: 'A cortina fechou sozinha!',
+        mensagem: 'A casa agora pensa antes de agir: SE está escuro, ENTÃO fecha; SENÃO, abre. Isso é uma decisão!',
       );
       if (!mounted) return;
       Navigator.push(
@@ -134,7 +137,7 @@ class _Phase3ScreenState extends State<Phase3Screen> {
 
     // a partir do 2º erro, a Lumi dá a pista concreta
     final dica = _tentativasErradas >= 1
-        ? '$erro\n\nPista: SE a luz estiver baixa (escuro) ENTÃO LIGAR; SENÃO DESLIGAR.'
+        ? '$erro\n\nPista: SE a luz estiver baixa (escuro) ENTÃO FECHAR; SENÃO ABRIR.'
         : erro;
     setState(() {
       _hasError = true;
@@ -214,10 +217,10 @@ class _Phase3ScreenState extends State<Phase3Screen> {
               LumiDialogCard(
                 mood: !_atalhoDecidido || _hasError ? LumiMood.pensando : LumiMood.instruindo,
                 text: !_atalhoDecidido
-                    ? 'A noite está chegando e o quintal vai ficar um breu. ${Historia.propostaAtalho}'
+                    ? 'A noite está chegando e, com a luz acesa, dá para ver tudo aqui dentro lá de fora. ${Historia.propostaAtalho}'
                     : _hasError
                     ? _dicaAtual
-                    : 'A noite está chegando e o quintal vai ficar um breu. O sensor mede a luz de 0 (escuro) a 100 (sol forte). Monte a decisão para a luz da varanda!',
+                    : 'A noite está chegando. O sensor mede a luz lá fora de 0 (escuro) a 100 (sol forte). Monte a decisão para a cortina do quarto: fechar quando escurecer e abrir quando clarear!',
               ),
               const SizedBox(height: 20),
 
@@ -269,7 +272,7 @@ class _Phase3ScreenState extends State<Phase3Screen> {
               ),
               const SizedBox(height: 16),
 
-              // Simulador: a lâmpada segue o programa da jogadora
+              // Simulador: a cortina segue o programa da jogadora
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -278,9 +281,13 @@ class _Phase3ScreenState extends State<Phase3Screen> {
                   child: Column(
                     children: [
                       Icon(
-                        _lampadaLigada ? Icons.lightbulb : Icons.lightbulb_outline,
+                        _cortinaFechada ? Icons.curtains_closed : Icons.curtains,
                         size: 64,
-                        color: _lampadaLigada ? Colors.amber : Colors.grey,
+                        color: _cortinaFechada ? const Color(0xFF6A1B9A) : Colors.amber,
+                      ),
+                      Text(
+                        _programaCompleto ? (_cortinaFechada ? 'Cortina: FECHADA' : 'Cortina: ABERTA') : 'Cortina: ?',
+                        style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
                       ),
                       const SizedBox(height: 8),
                       Text(

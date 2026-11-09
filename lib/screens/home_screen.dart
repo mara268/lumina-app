@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/game_state.dart';
+import '../widgets/conexao_maquete.dart';
 import 'inicio_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,6 +23,8 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 24.0),
             child: Column(
               children: [
+                // conexão com a maquete (ESP32) pelo Wi-Fi
+                const Align(alignment: Alignment.topRight, child: BotaoMaquete()),
                 const Spacer(),
                 Container(
                   width: 150,
